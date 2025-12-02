@@ -134,6 +134,25 @@ python bullet_core/train_production.py --config configs/your_config.yaml
 python test_checkpoints.py
 ```
 
+## 🎓 Bullet Education Notebook (Google Colab)
+
+**Train your first Marathi/Hindi/Indian language AI model in 3 minutes - no GPU required!**
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/iShrikantBhosale/bullet-core/blob/master/Bullet_OS_Education.ipynb)
+
+### What You'll Learn:
+- ✅ Train a Transformer model on **CPU only**
+- ✅ Work with **Indian languages** (Marathi, Hindi, etc.)
+- ✅ Apply **BQ4 quantization** (4-bit compression)
+- ✅ Download your **own trained model**
+- ✅ See **CPU vs GPU** performance comparison
+
+**Perfect for:** Students, colleges, workshops, and anyone learning AI without expensive hardware.
+
+**Time:** 15 minutes | **Cost:** ₹0 | **GPU Required:** No
+
+👉 **[Start Learning Now](https://colab.research.google.com/github/iShrikantBhosale/bullet-core/blob/master/Bullet_OS_Education.ipynb)**
+
 ## 🌍 Community Training Continuation
 
 Want to continue training the Marathi model? Just run:
