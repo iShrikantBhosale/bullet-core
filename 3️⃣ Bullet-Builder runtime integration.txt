@@ -1,0 +1,244 @@
+🤖 AI AGENT PROMPT — Bullet-Builder Runtime Integration Layer (Step 3)
+🟩 SYSTEM / DEVELOPER INSTRUCTION
+
+You are an elite ML systems engineer and C++/Python integration architect.
+Your job is to generate the complete runtime integration layer that links:
+
+PyTorch training
+
+bullet-builder (.bullet exporter)
+
+bullet-core (C++ runtime)
+
+CLI usage
+
+Python API usage
+
+This must produce a developer-friendly, real workflow.
+
+📘 INPUT FILES (YOU MUST FOLLOW EXACTLY)
+✔ .bullet v1.0 specification
+
+✔ BULLET_CORE_ARCHITECTURE.md
+
+✔ bullet-core.cpp (reference impl)
+✔ bullet-builder.cpp (exporter)
+✔ Test suite results (all 13 passed)
+
+(This guarantees correctness of core components)
+
+🔥 OUTPUT — GENERATE THE ENTIRE INTEGRATION LAYER
+
+You must generate all of the following files:
+
+integration/
+ ├── bullet_python_bindings.cpp
+ ├── bullet_py_api.py
+ ├── bullet_export.py
+ ├── bullet_train_export_example.py
+ ├── bullet_cli.cpp
+ ├── CMakeLists.txt
+ ├── setup.py
+ ├── README_INTEGRATION.md
+
+
+All files must be fully implemented, not stubs.
+
+🧩 WHAT EACH FILE MUST CONTAIN
+1️⃣ bullet_python_bindings.cpp
+
+Use pybind11 (header-only) to expose the full C++ runtime:
+
+Expose:
+
+BulletModel::generate
+BulletModel::ner
+BulletModel::pos
+BulletModel::sentiment
+BulletModel::classify
+
+
+Allow loading .bullet files directly:
+
+model = BulletModel("model.bullet")
+
+
+Include:
+
+conversion helpers
+
+vector<string> and python lists
+
+UTF-8 safe interfaces
+
+2️⃣ bullet_py_api.py
+
+A Python-side wrapper:
+
+from bullet_bindings import BulletModel
+
+class Bullet:
+    def __init__(self, path):
+        self.model = BulletModel(path)
+
+    def chat(self, text):
+        return self.model.generate(text)
+
+    def ner(self, text):
+        return self.model.ner(text)
+
+
+Must include:
+
+high-level user-facing methods
+
+auto token counting
+
+safe fallback error messages
+
+3️⃣ bullet_export.py
+
+A Python utility that:
+
+loads a PyTorch nn.Module
+
+extracts weights
+
+flattens tensors
+
+calls bullet-builder internally
+
+writes the .bullet file
+
+Include functions:
+
+def export_to_bullet(model, vocab, outpath):
+    ...
+
+
+Must include:
+
+tensor scanning
+
+weight name → fnv64
+
+numpy/tensor conversion
+
+saves a temp directory
+
+calls bullet-builder
+
+4️⃣ bullet_train_export_example.py
+
+A full working example script:
+
+defines a tiny PyTorch model
+
+trains it on dummy data
+
+saves pytorch weights
+
+exports to .bullet
+
+loads with bullet-core
+
+runs a demo inference
+
+Must be runnable end-to-end.
+
+5️⃣ bullet_cli.cpp
+
+A C++ command-line tool:
+
+Commands:
+
+bullet run model.bullet "hello"
+bullet ner model.bullet "John lives in Pune"
+bullet pos model.bullet "I love LLMs"
+bullet sent model.bullet "This is great"
+bullet cls model.bullet "Sports news..."
+
+
+This must link to bullet-core.
+
+6️⃣ integration/CMakeLists.txt
+
+Build rules for:
+
+bullet-cli
+
+python bindings
+
+linking bullet-core
+
+installing headers
+
+7️⃣ integration/setup.py
+
+Python packaging file to install:
+
+pip install bullet-ai
+
+
+This must:
+
+build pybind11 extension
+
+include bullet-core static/shared lib
+
+8️⃣ README_INTEGRATION.md
+
+Clear docs for developers:
+
+Must include:
+
+How to train a PyTorch model
+
+How to export to .bullet
+
+How to load in Python
+
+How to load via bullet-core
+
+CLI quick examples
+
+File structure explanation
+
+Best practices
+
+💡 EXTRA REQUIREMENTS
+✔ Must be REAL CODE
+
+No pseudocode allowed.
+Must compile and run.
+
+✔ Must use pybind11 (header-only).
+
+DO NOT omit binding code.
+
+✔ Must include error handling.
+
+Invalid .bullet → descriptive error.
+
+✔ Must include cross-platform support.
+
+Paths, file handling, etc.
+
+✔ Python scripts must be Python 3.8+.
+
+No outdated syntax.
+
+✔ CLI must accept UTF-8 strings.
+❗ FINAL OUTPUT RULE
+
+Output ALL files listed above with full content.
+No explanation, no commentary, no markdown.
+
+Just:
+
+integration/
+ ├── file1 contents...
+ ├── file2 contents...
+ ...
+
+🎬 BEGIN NOW.

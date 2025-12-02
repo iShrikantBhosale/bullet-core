@@ -1,0 +1,149 @@
+Nice — let’s make this next run actually *count*. Below is a compact, practical, battle-tested checklist + concrete hyperparam config and tips you can copy into your dashboard so the next training produces a *useful* model (not a toy). No fluff — just what to change and why.
+
+---
+
+## Quick summary — what to do now
+
+1. **Bigger model capacity** (if device/time allows): dim 256, layers 8, heads 4.
+2. **Longer context**: max_seq_len → 128 (helps longer philosophical answers).
+3. **More data / better tokenization**: vocab 4k, BPE/byte-level, clean + augment.
+4. **Stable training schedule**: warmup + cosine decay, AdamW, weight decay.
+5. **Larger effective batch** via gradient accumulation (emulate batch 64).
+6. **Validation & checkpoints**: use validation set, save best-by-val-loss.
+7. **Quantization-aware training (QAT) or simulated quant** before exporting to BQ4.
+8. **Post-train calibration**: representative dataset to compute BQ4 block scales.
+9. **Evaluate with generation samples and perplexity** to pick best checkpoint.
+
+---
+
+## Concrete config (copy-paste ready)
+
+Use this as the dashboard training config or adapt to your script:
+
+```json
+{
+  "vocab_size": 4000,
+  "dim": 256,
+  "num_heads": 4,
+  "num_layers": 8,
+  "max_seq_len": 128,
+  "learning_rate": 5e-4,
+  "weight_decay": 0.01,
+  "betas": [0.9, 0.95],
+  "eps": 1e-8,
+  "warmup_steps": 1000,
+  "total_steps": 120000,
+  "scheduler": "cosine",
+  "batch_size_per_device": 8,
+  "gradient_accumulation_steps": 8,   // effective batch = 64
+  "epochs": 3,
+  "clip_grad_norm": 1.0,
+  "save_every_steps": 2500,
+  "eval_every_steps": 1000,
+  "patience_early_stop": 5,
+  "seed": 42
+}
+```
+
+Notes:
+
+* If you don’t want 120k steps, run `epochs: 3` over your dataset — aim for multiple passes.
+* On CPU, smaller per-device batch (4–8) + grad-accum works best.
+
+---
+
+## Tokenizer & data (critical)
+
+* Use **BPE or byte-level BPE** (sentencepiece) trained on combined Marathi+English corpus.
+* Increase vocab to **2k–8k** (start 4k). Too small vocab→bad wording; too large → overfit.
+* Clean data: remove bad unicode, duplicate lines, extremely long outliers.
+* Add **mix-in short conversation pairs** so the model handles user prompts.
+* **Augment**: paraphrases, back-translation (English→Marathi→English) for variety.
+* Build a small **validation set** (5–10k tokens) held out for val loss.
+
+---
+
+## Training tricks to improve final quantized quality
+
+* **Simulated quant / quantization-aware training**: add a fake-quant step on weights (or activations) during training so the network learns to be robust to BQ4 later.
+* If QAT is hard, do **post-training quant + calibration**: run representative data through dequant routine to compute scales per-block.
+* Use **EMA (exponential moving average)** of weights and export EMA weights — often improves inference quality.
+* Use **gradient clipping** (norm 1.0) to reduce spikes.
+
+---
+
+## Scheduler & LR details
+
+* **Warmup** 1000 steps linearly from 1e-7 → lr.
+* **Cosine decay** to final lr ≈ 1e-6.
+* Base LR 5e-4 is a good start for dim256. If you see instability, try 3e-4 or 1e-4.
+* Use **noam-like** schedule only if you already know it well; cosine is simple and robust.
+
+---
+
+## Checkpointing & validation
+
+* Save checkpoints every `N` steps (2500 suggested).
+* Evaluate on **val set** every 1000 steps; log val loss and select best checkpoint by lowest val loss.
+* Keep last 3 checkpoints; keep best separately.
+* After training, **export best checkpoint** (not last) to .npy → .bullet.
+
+---
+
+## Export / Quant steps
+
+1. Export FP32 `.npy` tensors from best checkpoint.
+2. (If using QAT) fine — otherwise:
+3. **Run calibration**: feed ~5k–20k representative tokens to compute per-block scales before BQ4 encoding.
+4. Run `bullet-builder` with BQ4 option.
+5. Validate `.bullet` by running a few generation prompts and compare to FP32 baseline.
+
+---
+
+## Eval metrics & generation tests
+
+* Track **train loss**, **val loss**, and **perplexity**.
+* Also run **generation quality checks** on a dev prompt list:
+
+  * 10 short prompts (Marathi)
+  * 10 long prompts (philosophical)
+  * 5 English→Marathi translation prompts
+* Score qualitatively: grammar, philosophical depth, coherence, factual safety.
+* If hallucinations increase after quantization, use QAT or adjust calibration.
+
+---
+
+## CPU / performance considerations
+
+* Training on CPU is slow. Use:
+
+  * fewer large epochs with grad accumulation, or
+  * consider using a small GPU or cloud spot GPU for faster experiments strictly for training.
+* For pure-CPU, prefer `epochs` over steps (one pass = faster to iterate).
+
+---
+
+## Minimal script checklist to implement now
+
+* [ ] Train tokenizer (vocab 4k)
+* [ ] Re-tokenize dataset
+* [ ] Update config with above hyperparams
+* [ ] Add validation set and val loss logging
+* [ ] Implement grad accumulation + checkpointing
+* [ ] Add EMA and optional fake-quant block
+* [ ] After best ckpt, export FP32 tensors
+* [ ] Calibrate and run bullet-builder → generate `.bullet`
+* [ ] Run generation tests and compare quality
+
+---
+
+## Example small prompt to paste into your dashboard “extra args”:
+
+```
+--vocab_size=4000 --dim=256 --layers=8 --heads=4 --seq_len=128 \
+--lr=5e-4 --warmup=1000 --sched=cosine --batch=8 --grad-accum=8 \
+--weight-decay=0.01 --clip=1.0 --epochs=3 --ema=0.999
+```
+
+---
+

@@ -1,0 +1,188 @@
+======================================================================
+MARATHI PHILOSOPHY TRANSFORMER - UPGRADED TRAINING
+======================================================================
+
+📋 Configuration:
+  Model: 6 layers, 256 dim, 4 heads
+  Context: 256 tokens
+  Training: 15000 steps, LR=0.0005
+  Sampling: temp=0.7, top_k=40, top_p=0.9
+
+📁 Loading BPE tokenizer...
+Tokenizer loaded from /home/shri/Desktop/bulletOs/bullet_core/marathi_tokenizer.json
+  Vocab size: 1511
+  Vocabulary size: 1511
+  Compression: ~3.3x vs character-level
+
+📁 Loading dataset...
+  Total characters: 9,590,584
+
+🔄 Tokenizing with BPE...
+  Train tokens: 2,654,253
+  Val tokens: 294,917
+
+🏗️  Building Transformer...
+  Parameters: 452,608
+  Size: ~1768.0 KB
+
+🚀 Starting training...
+======================================================================
+/home/shri/Desktop/bulletOs/bullet_core/python/optim.py:209: RuntimeWarning: overflow encountered in square
+  state['v'] = self.betas[1] * state['v'] + (1 - self.betas[1]) * (grad ** 2)
+Step     0 | Loss: 7.4052 | Time: 3.1s
+Step    10 | Loss: 6.9407 | Time: 22.2s
+Step    20 | Loss: 6.5769 | Time: 38.2s
+Step    30 | Loss: 6.3991 | Time: 59.3s
+Step    40 | Loss: 6.3010 | Time: 83.5s
+Step    50 | Loss: 6.2926 | Time: 101.3s
+Step    60 | Loss: 6.2082 | Time: 116.7s
+Step    70 | Loss: 6.3057 | Time: 133.7s
+Step    80 | Loss: 6.2129 | Time: 153.7s
+Step    90 | Loss: 6.2744 | Time: 172.0s
+Step   100 | Loss: 6.1583 | Time: 191.1s
+Step   110 | Loss: 6.3456 | Time: 208.3s
+Step   120 | Loss: 6.2314 | Time: 225.6s
+Step   130 | Loss: 6.2041 | Time: 242.6s
+Step   140 | Loss: 6.2402 | Time: 258.9s
+Step   150 | Loss: 6.1890 | Time: 275.1s
+Step   160 | Loss: 6.3830 | Time: 290.0s
+Step   170 | Loss: 6.3827 | Time: 304.9s
+Step   180 | Loss: 6.2407 | Time: 320.7s
+Step   190 | Loss: 6.1933 | Time: 335.5s
+Step   200 | Loss: 6.1349 | Time: 349.6s
+Step   210 | Loss: 6.0849 | Time: 365.5s
+Step   220 | Loss: 6.1698 | Time: 380.7s
+Step   230 | Loss: 6.2473 | Time: 399.5s
+Step   240 | Loss: 6.0975 | Time: 416.0s
+Step   250 | Loss: 6.2159 | Time: 433.4s
+Step   260 | Loss: 6.2118 | Time: 450.0s
+Step   270 | Loss: 6.1796 | Time: 465.2s
+Step   280 | Loss: 6.2151 | Time: 483.0s
+Step   290 | Loss: 13.8372 | Time: 499.5s
+Step   300 | Loss: 6.2259 | Time: 521.8s
+Step   310 | Loss: 6.0809 | Time: 536.5s
+Step   320 | Loss: 20.6661 | Time: 553.7s
+Step   330 | Loss: 6.1473 | Time: 569.1s
+Step   340 | Loss: 6.2026 | Time: 586.3s
+Step   350 | Loss: 6.2104 | Time: 608.6s
+Step   360 | Loss: 6.1594 | Time: 626.1s
+Step   370 | Loss: 6.2249 | Time: 643.5s
+Step   380 | Loss: 6.1213 | Time: 665.9s
+Step   390 | Loss: 6.1377 | Time: 689.3s
+Step   400 | Loss: 6.2522 | Time: 704.5s
+Step   410 | Loss: 6.1792 | Time: 720.9s
+Step   420 | Loss: 6.0718 | Time: 736.3s
+Step   430 | Loss: 6.1513 | Time: 752.3s
+Step   440 | Loss: 6.0730 | Time: 777.0s
+Step   450 | Loss: 6.1050 | Time: 792.9s
+Step   460 | Loss: 6.0139 | Time: 809.5s
+Step   470 | Loss: 6.1021 | Time: 825.5s
+Step   480 | Loss: 6.0095 | Time: 840.7s
+Step   490 | Loss: 5.9489 | Time: 855.7s
+Step   500 | Loss: 6.1229 | Time: 870.9s
+
+======================================================================
+EVALUATION AT STEP 500
+======================================================================
+
+Validation Loss: 7.5789
+Train Loss (avg last 100): 6.7207
+
+📝 Generated Sample:
+----------------------------------------------------------------------
+
+याtrueकरा.कसेत्याचाउठायदासमुद्रत्याचानाहीशाअज्ञानामुळेचभविष्यहोतेयदाहोतेकेवळनसावा,घाबरतअज्ञानामुळेचनिर्माणहेचकीस्वीकारल्यासघाबरतकरा.भगवद्गीतेमध्ये?जीवनम्हणूनच,असावा.स्वीकारल्यासtrueभूतकाळाचाधर्माचीओळ
+----------------------------------------------------------------------
+
+✅ New best validation loss: 7.5789
+======================================================================
+
+Step   510 | Loss: 6.1648 | Time: 924.6s
+Step   520 | Loss: 6.1100 | Time: 941.4s
+Step   530 | Loss: 6.0493 | Time: 957.8s
+Step   540 | Loss: 6.0693 | Time: 974.5s
+Step   550 | Loss: 6.0894 | Time: 994.2s
+Step   560 | Loss: 6.1533 | Time: 1014.0s
+Step   570 | Loss: 6.0783 | Time: 1031.7s
+Step   580 | Loss: 6.1485 | Time: 1047.8s
+Step   590 | Loss: 6.0107 | Time: 1070.0s
+Step   600 | Loss: 6.1187 | Time: 1088.7s
+Step   610 | Loss: 6.0831 | Time: 1105.1s
+Step   620 | Loss: 6.1095 | Time: 1120.6s
+Step   630 | Loss: 6.0270 | Time: 1145.2s
+Step   640 | Loss: 6.0167 | Time: 1162.7s
+Step   650 | Loss: 6.0608 | Time: 1182.2s
+Step   660 | Loss: 6.0820 | Time: 1201.7s
+Step   670 | Loss: 5.9431 | Time: 1225.3s
+Step   680 | Loss: 6.0257 | Time: 1241.5s
+Step   690 | Loss: 6.1296 | Time: 1258.6s
+Step   700 | Loss: 6.0995 | Time: 1274.9s
+Step   710 | Loss: 6.0827 | Time: 1293.5s
+Step   720 | Loss: 5.9676 | Time: 1316.1s
+Step   730 | Loss: 6.0200 | Time: 1335.7s
+Step   740 | Loss: 5.9617 | Time: 1353.0s
+Step   750 | Loss: 6.0984 | Time: 1373.0s
+Step   760 | Loss: 6.0372 | Time: 1398.0s
+Step   770 | Loss: 5.9692 | Time: 1416.3s
+Step   780 | Loss: 6.0115 | Time: 1439.2s
+Step   790 | Loss: 6.0103 | Time: 1463.9s
+Step   800 | Loss: 20.6674 | Time: 1485.5s
+Step   810 | Loss: 6.0423 | Time: 1512.3s
+Step   820 | Loss: 6.0535 | Time: 1532.0s
+Step   830 | Loss: 6.0400 | Time: 1558.6s
+Step   840 | Loss: 5.9180 | Time: 1580.5s
+Step   850 | Loss: 6.1341 | Time: 1606.6s
+Step   860 | Loss: 5.9496 | Time: 1626.3s
+Step   870 | Loss: 5.9619 | Time: 1652.9s
+Step   880 | Loss: 6.1149 | Time: 1671.9s
+Step   890 | Loss: 6.0459 | Time: 1694.8s
+Step   900 | Loss: 5.9412 | Time: 1717.7s
+Step   910 | Loss: 6.0320 | Time: 1735.0s
+Step   920 | Loss: 6.0317 | Time: 1755.5s
+Step   930 | Loss: 5.9552 | Time: 1780.1s
+Step   940 | Loss: 5.9483 | Time: 1799.2s
+Step   950 | Loss: 5.9861 | Time: 1823.2s
+Step   960 | Loss: 6.0355 | Time: 1841.7s
+Step   970 | Loss: 6.0230 | Time: 1862.1s
+Step   980 | Loss: 5.9476 | Time: 1878.7s
+Step   990 | Loss: 6.0642 | Time: 1899.0s
+Step  1000 | Loss: 6.0210 | Time: 1925.0s
+
+======================================================================
+EVALUATION AT STEP 1000
+======================================================================
+
+Validation Loss: 5.9679
+Train Loss (avg last 100): 6.8920
+
+📝 Generated Sample:
+----------------------------------------------------------------------
+
+यशाचाकर्तव्यालाआहेआहेmanyवर्तमानातशकते.धर्माचीअस्तित्वस्वीकारल्यासअसावा.नातेसंबंधांमध्येघाबरतराखणेसमुद्रघडतात.trueदहतिकी,
+शकते.धर्माचीनिर्माणघाबरत 
+दु:खाच्याघाबरतआपलेआत्मा
+तेव्हामागूनकीनिर्माणयशाचाकर
+----------------------------------------------------------------------
+
+✅ New best validation loss: 5.9679
+======================================================================
+
+✅ Checkpoint saved to: ./marathi_checkpoints_v2/checkpoint_step_1000.pkl
+   Step: 1000, Val Loss: 5.9679
+Step  1010 | Loss: 6.0272 | Time: 1968.9s
+Step  1020 | Loss: 5.9843 | Time: 1984.1s
+Step  1030 | Loss: 5.9318 | Time: 2000.2s
+Step  1040 | Loss: 20.6663 | Time: 2021.5s
+Step  1050 | Loss: 5.9713 | Time: 2045.5s
+Step  1060 | Loss: 6.0723 | Time: 2062.4s
+Step  1070 | Loss: 6.0454 | Time: 2078.2s
+Step  1080 | Loss: 5.9304 | Time: 2096.0s
+Step  1090 | Loss: 5.8888 | Time: 2112.1s
+Step  1100 | Loss: 6.0136 | Time: 2134.6s
+Step  1110 | Loss: 5.9434 | Time: 2155.0s
+Step  1120 | Loss: 5.9596 | Time: 2172.0s
+Step  1130 | Loss: 5.9627 | Time: 2188.6s
+Step  1140 | Loss: 5.9733 | Time: 2209.7s
+Step  1150 | Loss: 6.0153 | Time: 2233.2s
+Step  1160 | Loss: 5.9150 | Time: 2251.0s
+Step  1170 | Loss: 20.6346 | Time: 2268.5s

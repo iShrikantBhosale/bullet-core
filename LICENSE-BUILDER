@@ -1,0 +1,41 @@
+# Bullet Builder - Commercial License
+
+Copyright (c) 2025 Bullet OS. All Rights Reserved.
+
+## License Grant
+
+This software and associated documentation files (the "Software") are proprietary and confidential. You may not use, copy, modify, merge, publish, distribute, sublicense, or sell copies of the Software without a valid commercial license from Bullet OS.
+
+## Commercial Licensing
+
+To obtain a commercial license, please contact: licensing@bulletos.ai
+
+### Pricing Tiers
+
+**Indie License** - $99/month
+- Up to 10 model conversions per month
+- Email support
+- Single developer
+
+**Enterprise License** - $999/month
+- Unlimited model conversions
+- Priority support
+- Unlimited developers
+- Custom integrations
+
+## Restrictions
+
+Without a valid license, you may NOT:
+- Use the builder to convert models
+- Distribute the builder software
+- Reverse engineer the builder
+- Create derivative works
+
+## Runtime vs Builder
+
+Note: The Bullet **Runtime** (`bullet-core.cpp`, `bullet-api.cpp`) is open-source under the MIT License. This commercial license applies ONLY to the **Builder** (`bullet-builder.cpp`) and model conversion tools.
+
+## Contact
+
+For licensing inquiries: licensing@bulletos.ai
+For technical support: support@bulletos.ai

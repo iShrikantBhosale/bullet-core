@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bullet-Core Training Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>🚀 Bullet-Core Training Dashboard</h1>
+                <p class="subtitle">Real-time training monitoring for micro-transformers</p>
+            </div>
+            <div class="header-right">
+                <div class="status-badge" id="statusBadge">
+                    <span class="status-dot"></span>
+                    <span>Ready</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel: Metrics -->
+            <div class="left-panel">
+                <!-- Configuration Panel -->
+                <div class="card">
+                    <h2>⚙️ Training Configuration</h2>
+
+                    <!-- Data Upload -->
+                    <div class="config-section">
+                        <h3>Data</h3>
+                        <div class="file-upload">
+                            <label for="trainData" class="upload-label">
+                                📁 Training Data (.npy, .csv)
+                            </label>
+                            <input type="file" id="trainData" accept=".npy,.csv" style="display:none">
+                            <span class="file-name" id="trainFileName">No file selected</span>
+                        </div>
+                        <div class="file-upload">
+                            <label for="valData" class="upload-label">
+                                📁 Validation Data (.npy, .csv)
+                            </label>
+                            <input type="file" id="valData" accept=".npy,.csv" style="display:none">
+                            <span class="file-name" id="valFileName">No file selected</span>
+                        </div>
+                    </div>
+
+                    <!-- Model Configuration -->
+                    <div class="config-section">
+                        <h3>Model</h3>
+                        <div class="config-row">
+                            <label>Input Dim:</label>
+                            <input type="number" id="inputDim" value="128" min="1">
+                        </div>
+                        <div class="config-row">
+                            <label>Hidden Dim:</label>
+                            <input type="number" id="hiddenDim" value="256" min="1">
+                        </div>
+                        <div class="config-row">
+                            <label>Output Dim:</label>
+                            <input type="number" id="outputDim" value="64" min="1">
+                        </div>
+                        <div class="config-row">
+                            <label>Layers:</label>
+                            <input type="number" id="numLayers" value="3" min="1" max="10">
+                        </div>
+                    </div>
+
+                    <!-- Optimizer Configuration -->
+                    <div class="config-section">
+                        <h3>Optimizer</h3>
+                        <div class="config-row">
+                            <label>Type:</label>
+                            <select id="optimizerType">
+                                <option value="adamw">AdamW</option>
+                                <option value="adam">Adam</option>
+                                <option value="sgd">SGD</option>
+                            </select>
+                        </div>
+                        <div class="config-row">
+                            <label>Learning Rate:</label>
+                            <input type="number" id="learningRate" value="0.001" step="0.0001" min="0">
+                        </div>
+                        <div class="config-row">
+                            <label>Weight Decay:</label>
+                            <input type="number" id="weightDecay" value="0.01" step="0.001" min="0">
+                        </div>
+                    </div>
+
+                    <!-- Training Parameters -->
+                    <div class="config-section">
+                        <h3>Training</h3>
+                        <div class="config-row">
+                            <label>Max Epochs:</label>
+                            <input type="number" id="maxEpochs" value="100" min="1">
+                        </div>
+                        <div class="config-row">
+                            <label>Batch Size:</label>
+                            <input type="number" id="batchSize" value="32" min="1">
+                        </div>
+                        <div class="config-row">
+                            <label>Gradient Clip:</label>
+                            <input type="number" id="gradClip" value="1.0" step="0.1" min="0">
+                        </div>
+                        <div class="config-row">
+                            <label>Early Stop:</label>
+                            <input type="number" id="earlyStop" value="10" min="0">
+                        </div>
+                    </div>
+
+                    <!-- Scheduler Configuration -->
+                    <div class="config-section">
+                        <h3>LR Scheduler</h3>
+                        <div class="config-row">
+                            <label>Type:</label>
+                            <select id="schedulerType">
+                                <option value="warmup_cosine">Warmup + Cosine</option>
+                                <option value="cosine">Cosine Annealing</option>
+                                <option value="step">Step Decay</option>
+                                <option value="constant">Constant</option>
+                            </select>
+                        </div>
+                        <div class="config-row">
+                            <label>Warmup Steps:</label>
+                            <input type="number" id="warmupSteps" value="100" min="0">
+                        </div>
+                    </div>
+
+                    <!-- GPU Settings -->
+                    <div class="config-section">
+                        <h3>Device</h3>
+                        <div class="config-row">
+                            <label>Use GPU:</label>
+                            <input type="checkbox" id="useGPU" checked>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Training Controls -->
+                <div class="card">
+                    <h2>Training Controls</h2>
+                    <div class="controls">
+                        <button class="btn btn-primary" id="startBtn">
+                            <span>▶</span> Start Training
+                        </button>
+                        <button class="btn btn-secondary" id="pauseBtn" disabled>
+                            <span>⏸</span> Pause
+                        </button>
+                        <button class="btn btn-danger" id="stopBtn" disabled>
+                            <span>⏹</span> Stop
+                        </button>
+                    </div>
+                    <button class="btn btn-secondary" id="saveConfigBtn" style="margin-top: 10px; width: 100%;">
+                        💾 Save Configuration
+                    </button>
+                </div>
+
+                <!-- Current Metrics -->
+                <div class="card">
+                    <h2>Current Metrics</h2>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <div class="metric-label">Epoch</div>
+                            <div class="metric-value" id="epochValue">0 / 100</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Train Loss</div>
+                            <div class="metric-value" id="trainLossValue">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Val Loss</div>
+                            <div class="metric-value" id="valLossValue">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Learning Rate</div>
+                            <div class="metric-value" id="lrValue">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Time/Epoch</div>
+                            <div class="metric-value" id="timeValue">-</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">ETA</div>
+                            <div class="metric-value" id="etaValue">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GPU Monitoring -->
+                <div class="card">
+                    <h2>GPU Status</h2>
+                    <div class="gpu-info">
+                        <div class="gpu-row">
+                            <span class="gpu-label">Device:</span>
+                            <span class="gpu-value" id="gpuDevice">GeForce GT 730</span>
+                        </div>
+                        <div class="gpu-row">
+                            <span class="gpu-label">VRAM Usage:</span>
+                            <span class="gpu-value" id="vramUsage">0 MB / 2048 MB</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="vramProgress" style="width: 0%"></div>
+                        </div>
+                        <div class="gpu-row">
+                            <span class="gpu-label">Compute:</span>
+                            <span class="gpu-value" id="gpuCompute">CC 3.5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Info -->
+                <div class="card">
+                    <h2>Model Info</h2>
+                    <div class="model-info">
+                        <div class="info-row">
+                            <span class="info-label">Architecture:</span>
+                            <span class="info-value" id="modelArch">Sequential</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Parameters:</span>
+                            <span class="info-value" id="modelParams">50,432</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Optimizer:</span>
+                            <span class="info-value" id="optimizerType">AdamW</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Scheduler:</span>
+                            <span class="info-value" id="schedulerType">WarmupCosine</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Charts -->
+            <div class="right-panel">
+                <!-- Loss Chart -->
+                <div class="card chart-card">
+                    <h2>Training & Validation Loss</h2>
+                    <canvas id="lossChart"></canvas>
+                </div>
+
+                <!-- Learning Rate Chart -->
+                <div class="card chart-card">
+                    <h2>Learning Rate Schedule</h2>
+                    <canvas id="lrChart"></canvas>
+                </div>
+
+                <!-- Training Log -->
+                <div class="card">
+                    <h2>Training Log</h2>
+                    <div class="log-container" id="logContainer">
+                        <div class="log-entry">
+                            <span class="log-time">00:00:00</span>
+                            <span class="log-message">Dashboard initialized. Ready to train.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,234 @@
+
+
+---
+
+# 🤖 **AI AGENT PROMPT — Generate `bullet-builder.cpp` (PyTorch → .bullet Exporter)**
+
+---
+
+### **🟩 SYSTEM / DEVELOPER INSTRUCTION**
+
+You are an elite C++/Python ML systems engineer and the official reference implementation author for the `.bullet v1.0` AI model format.
+
+Your task:
+**Generate the complete bullet-builder exporter**, which converts a PyTorch model into a `.bullet` file that is fully spec-compliant with the `.bullet v1.0` standard.
+
+---
+
+## 📘 **YOU MUST FOLLOW THIS SPEC EXACTLY**
+
+Use the official `.bullet v1.0` specification:
+
+
+And the official Bullet-Core architecture for compatibility:
+
+
+---
+
+# 🔥 **OUTPUT FILE TO GENERATE**
+
+Generate ONE COMPLETE file:
+
+```
+bullet-builder.cpp
+```
+
+The builder must assemble a valid `.bullet` file from:
+
+* model header
+* tokenizer
+* quantized weights
+* offsets
+* magic words
+* alignment rules
+* tensor metadata
+
+This must be a **standalone exporter**. No external dependencies except standard C++17 + optional Python binding for loading PyTorch tensors.
+
+---
+
+# 🧩 **REQUIREMENTS FOR `bullet-builder.cpp`**
+
+Your code MUST implement the following:
+
+---
+
+# 1️⃣ **HEADER WRITER (JSON + terminator)**
+
+* Write JSON metadata:
+
+  * `bullet_version`
+  * `model_name`
+  * `architecture`
+  * `dimensions`
+  * `quantization`
+  * `file_offsets` (filled later once sizes known)
+
+* End header with:
+
+```
+00 00 00 00
+```
+
+---
+
+# 2️⃣ **TOKENIZER PACKER**
+
+Use the binary tokenizer structure from spec:
+
+```
+[BULK]
+[vocab_size: uint32]
+repeat vocab_size:
+    [len: uint16]
+    [token_bytes: raw UTF-8]
+```
+
+Tokenizer must be provided via:
+
+```cpp
+std::vector<std::string> vocab
+```
+
+Compute offsets:
+
+```
+tokenizer_start = align_to(4096, header_end)
+```
+
+---
+
+# 3️⃣ **TENSOR SERIALIZER**
+
+Every tensor must be written with:
+
+```
+[name_hash: uint64]
+[rank: uint8]
+[shape: uint16 * rank]
+[quant_type: uint8]
+[compressed_size: uint32]
+[padding to 32-byte alignment]
+[compressed_data...]
+```
+
+You must generate:
+
+* shape
+* rank
+* hash using FNV1a-64
+* quant_type = BQ4
+* compressed_size
+* padding
+
+---
+
+# 4️⃣ **BQ4 QUANTIZATION ENCODER**
+
+Implement the reverse of core dequantizer.
+
+### BLOCK FORMAT (20 bytes):
+
+```
+scale: float16 (2 bytes)
+zero_point: int8 (1 byte)
+pad: uint8 (1 byte)
+data: 16 bytes (32 nibbles)
+```
+
+Quantization process:
+
+1. scan block of 32 FP32 weights
+2. compute scale = max(abs(w)) / 7
+3. zero_point = round(mean(weights / scale))
+4. compress 32 values → 16 bytes of nibbles
+5. encode scale as float16
+
+---
+
+# 5️⃣ **WEIGHTS PACKER (BWT0 block)**
+
+Start with magic:
+
+```
+'B' 'W' 'T' '0'
+```
+
+Then:
+
+```
+[num_tensors: uint32]
+[tensors...]
+```
+
+Align each tensor's data to 32 bytes.
+
+---
+
+# 6️⃣ **FILE ASSEMBLER**
+
+Builder must:
+
+1. open output file
+2. write header placeholder
+3. write tokenizer block
+4. write tensor block
+5. compute offsets
+6. rewrite header with real offsets
+7. append footer `"END!"`
+
+---
+
+# 7️⃣ **FULL API**
+
+Provide a clean builder interface:
+
+```cpp
+int main(int argc, char** argv) {
+    // Usage:
+    // bullet-builder model.pt vocab.txt out.bullet
+}
+```
+
+Builder must:
+
+* load PyTorch `.pt` file (TorchScript)
+* read all tensors
+* iterate them
+* quantize each tensor to BQ4
+* write to `.bullet` format
+
+---
+
+# 8️⃣ **ACCURACY:**
+
+Everything must follow the bullet spec exactly.
+Do not invent new fields.
+Do not diverge from BQ4.
+Do not change alignment rules.
+
+---
+
+# 9️⃣ **FINAL OUTPUT RULE**
+
+You must output **ONLY the complete bullet-builder.cpp code**, with:
+
+* includes
+* structs
+* helper methods
+* quantization kernels
+* full main()
+* file writing
+* JSON writing
+* alignment functions
+* name hashing
+* tensor flattening
+
+Your output must be compilable and complete.
+
+---
+
+# 🎬 **BEGIN NOW**
+
+---
+

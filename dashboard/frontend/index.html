@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bullet Model Training Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js for training graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🇮🇳 Bullet Model Training Dashboard</h1>
+            <p class="subtitle">Train tiny, powerful AI models optimized for your hardware</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Configuration Panel -->
+            <div class="panel config-panel">
+                <h2>⚙️ Model Configuration</h2>
+                <form id="trainForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="vocab_size">Vocabulary Size</label>
+                            <input type="number" name="vocab_size" value="5000" min="100" max="50000">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dim">Dimensions</label>
+                            <input type="number" name="dim" value="256" min="64" max="1024" step="64">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="num_heads">Attention Heads</label>
+                            <input type="number" name="num_heads" value="4" min="1" max="16">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="num_layers">Layers</label>
+                            <input type="number" name="num_layers" value="8" min="1" max="24">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="max_seq_len">Sequence Length</label>
+                            <input type="number" name="max_seq_len" value="64" min="16" max="512">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="learning_rate">Learning Rate</label>
+                            <input type="number" name="learning_rate" value="0.001" step="0.0001" min="0.0001"
+                                max="0.1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="epochs">Epochs</label>
+                            <input type="number" name="epochs" value="2" min="1" max="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="batch_size">Batch Size</label>
+                            <input type="number" name="batch_size" value="4" min="1" max="128">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gradient_accumulation_steps">Gradient Accumulation</label>
+                            <input type="number" name="gradient_accumulation_steps" value="16" min="1" max="64">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="weight_decay">Weight Decay</label>
+                            <input type="number" name="weight_decay" value="0.01" step="0.001" min="0" max="0.1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="clip_grad_norm">Gradient Clipping</label>
+                            <input type="number" name="clip_grad_norm" value="1.0" step="0.1" min="0.1" max="10">
+                        </div>
+                    </div>
+
+                    <div class="preset-buttons">
+                        <button type="button" class="btn-preset" onclick="loadQuickPreset()">⚡ Super Fast</button>
+                        <button type="button" class="btn-preset" onclick="loadFullPreset()">🎯 BULLET_SPEC</button>
+                        <button type="button" class="btn-preset" onclick="loadProductionPreset()">🚀 Production
+                            (Best)</button>
+                    </div>
+
+                    <div class="form-group file-upload">
+                        <label for="file">📄 Training Data (.txt or .jsonl)</label>
+                        <input type="file" name="file" required accept=".txt,.jsonl">
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" id="trainBtn" class="btn-primary">🚀 Start Training</button>
+                        <button type="button" id="stopBtn" class="btn-danger hidden">⏹️ Stop Training</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Stats Panel -->
+            <div class="panel stats-panel">
+                <h2>📊 Training Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Hardware</div>
+                        <div class="stat-value" id="hardwareInfo">Detecting...</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Current Epoch</div>
+                        <div class="stat-value" id="currentEpoch">0/0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Current Batch</div>
+                        <div class="stat-value" id="currentBatch">0/0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Current Loss</div>
+                        <div class="stat-value" id="currentLoss">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Avg Loss</div>
+                        <div class="stat-value" id="avgLoss">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Time Elapsed</div>
+                        <div class="stat-value" id="timeElapsed">0s</div>
+                    </div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-label">Overall Progress</div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="progress-percent" id="progressPercent">0%</div>
+                </div>
+            </div>
+
+            <!-- Metrics Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-label">Current Loss</span>
+                    <span class="metric-value" id="currentLoss">-</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">Best Val Loss</span>
+                    <span class="metric-value" id="bestValLoss">-</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">ETA</span>
+                    <span class="metric-value" id="eta">-</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">Tokens/sec</span>
+                    <span class="metric-value" id="tokensPerSec">-</span>
+                </div>
+            </div>
+
+            <!-- Training Graphs -->
+            <div class="graphs-section">
+                <div class="graph-card">
+                    <h3>📉 Training Loss</h3>
+                    <canvas id="lossChart"></canvas>
+                </div>
+                <div class="graph-card">
+                    <h3>📊 Learning Rate</h3>
+                    <canvas id="lrChart"></canvas>
+                </div>
+                <div class="graph-card">
+                    <h3>🎯 Perplexity</h3>
+                    <canvas id="perplexityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Logs Panel -->
+            <div class="panel logs-panel">
+                <div class="log-header">
+                    <h2>📝 Training Logs</h2>
+                    <button id="clearLogs" class="btn-small">Clear</button>
+                </div>
+                <div class="log-console" id="logConsole">
+                    <div class="log-entry">Waiting to start training...</div>
+                </div>
+            </div>
+
+            <!-- Download Panel -->
+            <div class="panel download-panel hidden" id="downloadArea">
+                <h2>✅ Training Complete!</h2>
+                <p>Your model is ready to download.</p>
+                <a id="downloadLink" href="#" download class="btn-success">📥 Download Model</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,213 @@
+
+---
+
+### 🟩 **BULLET-CORE REFERENCE IMPLEMENTATION PROMPT**
+
+You are an expert C++ systems engineer, ML framework designer, and low-level AI runtime architect.
+Your task: **Design the full reference implementation for the `.bullet v1.0` model format**, based on the spec below.
+
+---
+
+## 🔥 **PRIMARY GOAL**
+
+Produce a complete, detailed **C++ architecture** for:
+
+### ✔ bullet-core
+
+* `.bullet` file parser
+* tokenizer loader
+* BQ4 quantized weights loader
+* transformer forward pass
+* multi-task head routing
+* inference context (KV cache)
+* streaming text generation
+* minimal runtime class design
+* memory layout + alignment rules
+
+Everything MUST be optimized for:
+
+* 1GB RAM systems
+* mobile CPUs
+* no GPU
+* extreme efficiency
+* fully offline execution
+* tiny 5MB–50MB models
+
+---
+
+## 🟦 **INPUT FORMAT (The .bullet Spec)**
+
+Use this official `.bullet v1.0` specification:
+
+
+**Your architecture MUST strictly follow that file.**
+
+---
+
+## 🧩 **WHAT TO GENERATE**
+
+You must produce:
+
+---
+
+### **1. High-Level Architecture Diagram**
+
+Show all components:
+
+* BulletModel
+* BulletHeader
+* BulletTokenizer
+* BulletWeights
+* BulletAttention
+* BulletFFN
+* BulletTaskHeads
+* BulletContext (KV Cache)
+* BulletRunner (inference engine)
+* Memory mapped file reader
+
+---
+
+### **2. C++ Class Structure**
+
+Exact class definitions:
+
+* fields
+* methods
+* constructors
+* destructors
+* relationships between classes
+
+---
+
+### **3. File Parsing Workflow**
+
+Explain step-by-step:
+
+* read header
+* detect terminator (00 00 00 00)
+* jump to tokenizer_start
+* load vocabulary
+* jump to weights_start
+* load tensors using fnv1a64
+* map quantized blocks
+* ensure alignment
+
+---
+
+### **4. BQ4 Loading & Dequantization**
+
+Implement:
+
+* 32-element block decompression
+* per-block scale + zero point
+* int4 unpacking
+* SIMD-friendly loops
+* on-the-fly dequant vs. cached
+
+---
+
+### **5. Transformer Forward Pass**
+
+Implement:
+
+* embedding lookup
+* rotary embeddings
+* quantized Q/K/V matmul
+* attention softmax
+* KV cache
+* FFN
+* final layernorm
+* logits head
+* sampling (top-k, top-p)
+
+---
+
+### **6. Multi-Task Head Switching**
+
+Design:
+
+```
+enum class Task { GEN, NER, POS, SENTIMENT, CLS };
+```
+
+and a routing system:
+
+```
+output = head_for(task).forward(hidden_state);
+```
+
+---
+
+### **7. Memory Optimization Plan**
+
+Detail:
+
+* 32-byte tensor alignment
+* mmap() file loading
+* pointer-level indexing
+* cache-aware loops
+* avoid heap fragmentation
+* preallocated inference buffers
+
+---
+
+### **8. Minimal Inference API**
+
+Example:
+
+```cpp
+BulletModel model("tiny.bullet");
+auto out = model.generate("hello world");
+auto tags = model.ner("Modi visited Mumbai");
+```
+
+---
+
+### **9. Pseudocode for Entire Pipeline**
+
+Readable but detailed:
+
+* load → parse → map tensors → run forward → output
+
+---
+
+## 🚀 **OUTPUT REQUIREMENTS**
+
+* Write like a senior AI runtime engineer
+* Use clean diagrams + clear formatting
+* Must be complete enough that a real developer can implement bullet-core based on your output
+* Accuracy MUST match the `.bullet` spec
+
+---
+
+### **BEGIN NOW.**
+
+---
+
+# ✔ DONE
+
+This prompt is designed so ANY advanced AI model will produce:
+
+* full architecture
+* full C++ class design
+* memory layout
+* quantization algorithms
+* attention logic
+* entire inference pipeline
+
+This becomes your **reference implementation generator**.
+
+---
+
+# 🔥 Want the next part?
+
+
+### 2️⃣ bullet-builder exporter prompt
+
+### 3️⃣ BQ4 algorithm prompt
+
+### 4️⃣ Hybrid transformer architecture prompt
+
+### 5️⃣ Official Bullet README.md for GitHub
+
+

@@ -1,0 +1,187 @@
+:root {
+    --saffron: #FF9933;
+    --white: #FFFFFF;
+    --green: #138808;
+    --chakra-blue: #000080;
+    --dark-bg: #0a0a0a;
+    --text-color: #e0e0e0;
+    --card-bg: #1a1a1a;
+}
+
+body {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+}
+
+/* Tricolor Header */
+.tricolor-header {
+    height: 12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+.saffron-band {
+    height: 4px;
+    background-color: var(--saffron);
+}
+
+.white-band {
+    height: 4px;
+    background-color: var(--white);
+    position: relative;
+}
+
+.green-band {
+    height: 4px;
+    background-color: var(--green);
+}
+
+/* Navigation */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 5%;
+    margin-top: 12px;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--white);
+    letter-spacing: -1px;
+}
+
+.links a {
+    color: var(--text-color);
+    text-decoration: none;
+    margin-left: 2rem;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.links a:hover {
+    color: var(--saffron);
+}
+
+/* Hero */
+.hero {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+}
+
+h1 {
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+}
+
+.highlight {
+    background: linear-gradient(90deg, var(--saffron), var(--white), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.cta-buttons {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn.primary {
+    background-color: var(--saffron);
+    color: #000;
+}
+
+.btn.secondary {
+    border: 1px solid var(--text-color);
+    color: var(--text-color);
+}
+
+/* Features */
+.features {
+    padding: 5rem 5%;
+    background-color: #111;
+}
+
+.features h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.card {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+
+.card h3 {
+    color: var(--saffron);
+    margin-top: 0;
+}
+
+/* Download */
+.download-section {
+    padding: 5rem 5%;
+    text-align: center;
+}
+
+.download-card {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    display: inline-block;
+    margin: 1rem;
+    width: 300px;
+    vertical-align: top;
+    border-top: 4px solid var(--green);
+}
+
+/* Footer */
+.tricolor-footer {
+    padding: 3rem 0;
+    text-align: center;
+    border-top: 1px solid #333;
+    background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+}
+
+.credits p {
+    margin: 0.5rem 0;
+    color: #888;
+}
+
+.credits a {
+    color: var(--saffron);
+    text-decoration: none;
+}

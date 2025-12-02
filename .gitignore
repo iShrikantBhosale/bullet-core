@@ -1,0 +1,33 @@
+# Build artifacts
+build/
+*.o
+*.so
+*.a
+*.wasm
+*.js
+!wasm_build/bullet.wasm
+!wasm_build/bullet.js
+
+# Dependencies
+emsdk/
+venv/
+__pycache__/
+*.egg-info/
+
+# Large Data
+*.jsonl
+*.pkl
+*.bin
+*.pt
+marathi_checkpoints*/
+
+# Keep release artifacts
+!release_v1/
+!production_v1.bullet
+
+# IDE
+.vscode/
+.idea/
+
+# System
+.DS_Store

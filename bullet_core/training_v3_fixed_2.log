@@ -1,0 +1,29 @@
+======================================================================
+MARATHI PHILOSOPHY TRANSFORMER - UPGRADED TRAINING
+======================================================================
+
+📋 Configuration:
+  Model: 8 layers, 256 dim, 4 heads
+  Context: 512 tokens
+  Training: 20000 steps, LR=0.0001
+  Sampling: temp=0.7, top_k=40, top_p=0.9
+
+📁 Loading BPE tokenizer...
+Tokenizer loaded from /home/shri/Desktop/bulletOs/bullet_core/marathi_tokenizer.json
+  Vocab size: 1511
+  Vocabulary size: 1511
+  Compression: ~3.3x vs character-level
+
+📁 Loading dataset...
+  Total characters: 9,590,584
+
+🔄 Tokenizing with BPE...
+  Train tokens: 2,654,253
+  Val tokens: 294,917
+
+🏗️  Building Transformer...
+Traceback (most recent call last):
+  File "/home/shri/Desktop/bulletOs/bullet_core/train_marathi_upgraded.py", line 119, in <module>
+    print(f"  Parameters: {model.count_parameters():,}")
+                           ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'GPT' object has no attribute 'count_parameters'

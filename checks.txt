@@ -1,0 +1,194 @@
+You are **very close** — training finished, builder ran, a `.bullet` file was created —
+but the **file size (995 KB)** tells me EXACTLY what’s missing:
+
+# ❗ **Your model weights were NOT fully exported and packed.**
+
+A correct 256-dim, 8-layer tiny transformer with BQ4 quantization should be:
+
+> **4 MB – 12 MB** (depending on number of layers, vocab, etc.)
+
+But your file is:
+
+> **995 KB** → too small
+> **Looks like only the header + tokenizer + partial tensors**
+
+This means **one of the builder input stages didn’t run correctly**.
+
+Let me walk you through the technical diagnosis ONLY:
+
+---
+
+# 🟥 **WHAT YOU HAVE NOW**
+
+You have:
+
+```
+model_1764597609.bullet
+Size: ~995 KB
+```
+
+This means:
+
+### ✔ Tokenizer embedded
+
+### ✔ Header OK
+
+### ✔ Spec metadata OK
+
+### ✔ BQ4 quantization structure OK
+
+### ❌ WEIGHTS MISSING or partially included
+
+### ❌ FFN / ATTENTION layers missing
+
+### ❌ Embedding tables probably not included
+
+So the builder created the file,
+but the training code **did not save raw tensors** or
+the builder **was not given tensor paths**.
+
+---
+
+# 🟦 **WHAT A PROPER MODEL SHOULD LOOK LIKE**
+
+A working 256-dim tiny model should contain:
+
+* embed_tokens
+* positional embeddings or RoPE params
+* 8 attention layers (Wq, Wk, Wv, Wo)
+* 8 feed-forward layers
+* Layer norms
+* vocab matrix
+* quantized blocks
+
+All packed into the `.bullet`.
+
+**This should never be below 3.5 MB**, even with compression.
+
+---
+
+# 🟧 **WHY YOURS IS TOO SMALL**
+
+This happens when:
+
+### ❌ Training did NOT save `.npy` tensors
+
+### ❌ Builder did NOT receive correct tensor folder path
+
+### ❌ Builder config.json missing weight entries
+
+### ❌ You used test mode builder instead of full mode
+
+### ❌ Python backend didn’t write the final tensor dumps
+
+---
+
+# 🟩 **CHECKLIST — WHAT YOU MUST VERIFY**
+
+### ✔ 1) In backend/outputs/weights/
+
+Do you see files like:
+
+```
+embeddings.npy
+layers/layer0_Wq.npy
+layers/layer0_Wk.npy
+...
+layers/layer7_ffn2.npy
+norm1.npy
+norm2.npy
+```
+
+If this folder is empty → NO weights exported.
+
+---
+
+### ✔ 2) Was `save_tensors(model)` called?
+
+Your training script must include:
+
+```python
+save_tensor("embeddings.npy", model.embed.weight)
+save_tensor("Wq.npy", layer.attn.q_proj.weight)
+...
+```
+
+If not, builder cannot build anything.
+
+---
+
+### ✔ 3) Check `config.json`
+
+It MUST list all tensors:
+
+```
+"tensors": [
+  {"name": "tok_embeddings", "shape": [...], "dtype": "BQ4", "file": "embeddings.npy"},
+  {"name": "layer0.attn.Wq", ...},
+  ...
+]
+```
+
+If only “tokenizer” and “header” are there → file will be < 1MB.
+
+---
+
+### ✔ 4) Check builder logs:
+
+You should see:
+
+```
+Packing tensor: embeddings (256 x 5000)
+Packing tensor: layer0.Wq ...
+Packing tensor: layer0.Wk ...
+...
+Packing tensor: layer7.FFN2 ...
+Model export completed!
+```
+
+If these logs are missing → weights missing.
+
+---
+
+# 🟦 **EXACT FIX: REGNERATE MODEL WITH TENSORS INCLUDED**
+
+To fix:
+
+1. Ensure the training script saves all tensors to `/backend/outputs/raw_tensors/`
+2. Ensure `config.json` includes all tensor entries
+3. Run builder manually:
+
+```
+./bullet_builder \
+  --config config.json \
+  --weights-dir raw_tensors/ \
+  --tokenizer tokenizer.json \
+  --output marathi_philosophy_turbo.bullet
+```
+
+This new file should be:
+
+✅ **4–12 MB**
+NOT **995 KB**
+
+---
+
+# 🟩 **IF YOU WANT, I CAN FIX EVERYTHING IMMEDIATELY**
+
+I can provide:
+
+### ✔ Correct tensor-saving code
+
+### ✔ Correct `config.json` template
+
+### ✔ Correct builder command
+
+### ✔ Correct training export pipeline
+
+### ✔ Step-by-step debugging based on your folder structure
+
+### ✔ How to inspect the `.bullet` file header to see missing tensors
+
+Just tell me:
+
+👉 **“Show me the tensor export fix.”**

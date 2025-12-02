@@ -1,0 +1,222 @@
+🤖 AI AGENT PROMPT — Generate COMPLETE bullet-core Runtime (C++ Full Engine)
+🟩 SYSTEM / DEVELOPER INSTRUCTION
+
+You are an elite C++17 systems engineer and ML runtime architect.
+Your task:
+
+🔥 Generate the COMPLETE bullet-core runtime
+
+(fully functional, production-ready, spec-compliant)
+
+This must turn the current reference architecture into a real, working inference engine for .bullet v1.0 models.
+
+📘 INPUT FILES (YOU MUST FOLLOW THESE EXACTLY)
+1. .bullet v1.0 specification
+
+2. Bullet-Core Architecture
+
+3. Current bullet-core.cpp (incomplete reference)
+
+Your output MUST be fully compatible with the above.
+
+🎯 OUTPUT
+
+Produce a single file:
+
+bullet-core.cpp
+
+
+This is the final, production-ready runtime, not a skeleton.
+
+🧩 WHAT YOU MUST IMPLEMENT COMPLETELY
+
+Below are the REQUIRED features:
+
+1️⃣ FILE LOADER (mmap + fallback)
+
+mmap() support on Linux
+
+Read header (JSON)
+
+Detect 00 00 00 00 terminator
+
+Jump to tokenizer_start
+
+Jump to weights_start
+
+Unicode-safe tokenizer loading
+
+2️⃣ TENSOR REGISTRY
+
+Correct handling of:
+
+[name_hash]
+[rank]
+[shape]
+[quant_type]
+[compressed_size]
+[raw_data]
+
+
+You must implement:
+
+fnv1a64 hashing
+
+mapping hashed names → pointers to tensors
+
+storing shapes
+
+quantization type routing
+
+block decompression pointers
+
+3️⃣ BQ4 DEQUANTIZATION ENGINE (FULL IMPLEMENTATION)
+
+Implement full 20-byte → 32 FP32 block decode:
+
+scale: fp16
+zero_point: int8
+data: 16 bytes (int4 packed)
+
+
+Output must support:
+
+FP32 compute
+
+FP16 KV cache store
+
+Use:
+
+fast bit unpacking
+
+fused loops
+
+CPU-friendly memory layout
+
+4️⃣ MATH KERNELS (NO PLACEHOLDERS — REAL IMPLEMENTATION)
+
+Complete implementations for:
+
+✔ matmul_fp32 (SIMD-optimized)
+✔ matmul_bq4 (quantized matmul using 4-bit weights)
+✔ rmsnorm
+✔ layernorm
+✔ softmax (stable)
+✔ rotary embeddings
+✔ SwiGLU feed-forward
+✔ vector add/mul
+✔ KV-cache update + retrieval
+✔ sin/cos tables (precomputed)
+
+These must run efficiently on mobile CPUs.
+
+5️⃣ TRANSFORMER FORWARD PASS — FULL, WORKING
+
+Implement:
+
+Token embeddings
+
+RoPE applied to Q/K
+
+Quantized Q/K/V matmul
+
+KV cache store
+
+Attention score computation
+
+Softmax normalization
+
+Weighted sum for values
+
+Output projection
+
+RMSNorm
+
+SwiGLU FFN
+
+Residual connections
+
+Final layernorm
+
+Task head routing
+
+This must work end-to-end.
+
+6️⃣ MULTI-TASK HEAD ROUTING
+
+Using:
+
+enum class Task { GEN, NER, POS, SENTIMENT, CLS };
+
+
+The engine must:
+
+route hidden state to correct head
+
+run head matmul
+
+produce logits or tag outputs
+
+expose task-specific APIs
+
+7️⃣ SAMPLING ENGINE
+
+Implement:
+
+greedy
+
+top-k
+
+top-p
+
+repetition penalty
+
+temperature scaling
+
+8️⃣ PUBLIC API (FINAL)
+
+Provide:
+
+class BulletModel {
+public:
+    BulletModel(const std::string& path);
+
+    std::string generate(const std::string& text, int max_tokens = 256);
+
+    std::vector<std::pair<std::string, std::string>> ner(const std::string& text);
+    std::vector<std::string> pos(const std::string& text);
+    std::string sentiment(const std::string& text);
+    int classify(const std::string& text);
+};
+
+9️⃣ RUNTIME MEMORY OPTIMIZATION
+
+You MUST implement:
+
+one preallocated scratch buffer
+
+32-byte alignment
+
+avoid heap allocations in generation
+
+FP16 KV cache storage
+
+page-aligned model blocks
+
+🔟 FINAL REQUIREMENTS
+✔ THE FILE MUST COMPILE (C++17+)
+✔ NO pseudocode — REAL code
+✔ NO TODOs
+✔ NO incomplete functions
+✔ NO external dependencies (NO eigen, NO boost)
+✔ ONLY std::vector, std::string, std::unique_ptr
+✔ Works on Linux and Windows
+✔ Fully compatible with bullet-builder
+❗ FINAL OUTPUT RULE
+
+Output ONLY the complete bullet-core.cpp file.
+No explanations or commentary.
+No surrounding text.
+No markdown.
+
+🎬 BEGIN NOW

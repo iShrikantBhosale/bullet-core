@@ -1,0 +1,39 @@
+======================================================================
+MARATHI PHILOSOPHY TRANSFORMER - UPGRADED TRAINING
+======================================================================
+
+📋 Configuration:
+  Model: 8 layers, 256 dim, 4 heads
+  Context: 512 tokens
+  Training: 20000 steps, LR=0.0001
+  Sampling: temp=0.7, top_k=40, top_p=0.9
+
+📁 Loading BPE tokenizer...
+Tokenizer loaded from /home/shri/Desktop/bulletOs/bullet_core/marathi_tokenizer.json
+  Vocab size: 1511
+  Vocabulary size: 1511
+  Compression: ~3.3x vs character-level
+
+📁 Loading dataset...
+  Total characters: 9,590,584
+
+🔄 Tokenizing with BPE...
+  Train tokens: 2,654,253
+  Val tokens: 294,917
+
+🏗️  Building Transformer...
+  Parameters: 518,144
+  Size: ~2024.0 KB
+
+🚀 Starting training...
+======================================================================
+
+📊 Gradient Analysis (Step 0):
+/home/shri/.local/lib/python3.12/site-packages/numpy/linalg/_linalg.py:2792: RuntimeWarning: overflow encountered in dot
+  sqnorm = x.dot(x)
+  ⚠️  Param shape (1511, 256): norm=inf, max=23925558496652813626507264.00
+  ⚠️  Param shape (512, 256): norm=inf, max=23925558496652813626507264.00
+
+📈 Weight Statistics (Step 0):
+  ✓ All weights stable
+Step     0 | Loss: 7.3481 | Time: 10.9s

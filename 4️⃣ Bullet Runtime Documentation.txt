@@ -1,0 +1,314 @@
+🤖 AI AGENT PROMPT — Generate “Bullet Runtime API Documentation” (Prompt #4)
+🟩 SYSTEM / DEVELOPER INSTRUCTION
+
+You are a senior technical writer, ML systems engineer, and documentation architect.
+Your task:
+
+🔥 Generate the full official documentation for the Bullet Runtime API
+
+This documentation must be complete enough for:
+
+Developers
+
+Researchers
+
+ML engineers
+
+App builders
+
+To fully understand how to use, interact with, and embed the .bullet model format using the Bullet Runtime.
+
+📘 YOU MUST FOLLOW THESE INFORMATION SOURCES EXACTLY
+✔ .bullet v1.0 SPEC
+
+✔ Bullet-Core Architecture
+
+✔ bullet-core.cpp reference implementation
+✔ bullet-builder.cpp exporter
+✔ Full test-suite (all tests passed)
+
+You must integrate all these concepts together in the final documentation.
+
+🎯 OUTPUT — GENERATE ONE FILE
+
+Produce ONE complete documentation file:
+
+BULLET_RUNTIME_API.md
+
+
+This must be a professional, polished, complete developer manual.
+
+🧩 REQUIRED CONTENTS OF BULLET_RUNTIME_API.md
+
+The documentation must include the following sections, fully written:
+
+1️⃣ Overview
+
+Explain:
+
+What Bullet Runtime is
+
+Why it exists
+
+How it differs from GGUF, ONNX, CoreML
+
+Tiny-model philosophy
+
+Hybrid NLP + LLM design
+
+Use cases (mobile AI, offline AI, embedded AI)
+
+2️⃣ Installation
+
+Include:
+
+C++ compilation
+
+CMake instructions
+
+Python installation (pybind11 bindings)
+
+Windows + Linux instructions
+
+Build output structure
+
+3️⃣ Loading Models
+
+APIs:
+
+BulletModel model("model.bullet");
+
+
+Explain:
+
+how loading works
+
+memory layout
+
+mmap vs fallback
+
+error handling
+
+4️⃣ Public C++ API Reference
+
+Document every public method in bullet-core:
+
+BulletModel
+
+constructor
+
+generate
+
+ner
+
+pos
+
+sentiment
+
+classify
+
+Each method must include:
+
+parameters
+
+return values
+
+exceptions
+
+examples
+
+5️⃣ Python API Reference
+
+Document:
+
+from bullet import Bullet
+
+model = Bullet("model.bullet")
+model.chat("hello")
+model.ner("John lives in Pune")
+
+
+Explain differences from C++ API.
+
+6️⃣ Model Structure
+
+Explain the layout:
+
+header JSON
+
+tokenizer block
+
+weight block
+
+multi-task heads
+
+Include diagrams:
+
++----------------------+
+| BULLET_HEADER_JSON   |
++----------------------+
+| 00 00 00 00          |
++----------------------+
+| TOKENIZER (BULK)     |
++----------------------+
+| WEIGHTS (BWT0)       |
++----------------------+
+| END!                 |
++----------------------+
+
+7️⃣ Tokenizer API
+
+Document:
+
+how byte-BPE tokenizer works
+
+how tokens map to IDs
+
+how IDs map to tokens
+
+tokenization examples
+
+text normalization rules
+
+8️⃣ Quantization API (BQ4)
+
+Explain:
+
+block size
+
+scale
+
+zero-point
+
+int4 packing
+
+how runtime dequantizes
+
+numerical stability
+
+performance benefits
+
+Include a block diagram:
+
+[FP32 weights] -> [scale + zero_point + packed int4] -> [BQ4 block]
+
+9️⃣ Transformer Runtime
+
+Document ALL parts:
+
+embeddings
+
+attention
+
+KV cache
+
+RoPE
+
+FFN
+
+residual connections
+
+final layernorm
+
+sampling
+
+Include flow diagram:
+
+input -> tokenize -> embeddings
+        -> QKV -> attention -> hidden
+        -> FFN -> hidden -> task head -> output
+
+🔟 Multi-Task Heads
+
+Explain:
+
+GEN
+
+NER
+
+POS
+
+Sentiment
+
+Classification
+
+Include example API calls.
+
+1️⃣1️⃣ Performance Tuning
+
+Include:
+
+32-byte alignment
+
+preallocated buffers
+
+SIMD instructions
+
+KV cache memory optimization
+
+quantized matmul tips
+
+1️⃣2️⃣ Error Handling
+
+Document:
+
+corrupt header
+
+missing tensors
+
+invalid BQ4 blocks
+
+tokenizer mismatch
+
+invalid offsets
+
+Give examples.
+
+1️⃣3️⃣ CLI Usage
+
+Document:
+
+bullet run model.bullet "hello"
+bullet ner model.bullet "John lives in India"
+
+1️⃣4️⃣ Integration With PyTorch
+
+Show:
+
+how to export
+
+how Python exporter works
+
+how to verify exported .bullet models
+
+how to run tests
+
+1️⃣5️⃣ Examples
+
+Include:
+
+Full minimal C++ program
+
+Full minimal Python program
+
+Output examples
+
+💡 STYLE REQUIREMENTS
+✔ Professional developer documentation
+✔ Clear diagrams
+✔ Code examples
+✔ No missing sections
+✔ No TODOs
+✔ No placeholders
+❗ FINAL OUTPUT RULE
+
+Output ONLY the file:
+
+BULLET_RUNTIME_API.md
+
+
+with its complete documentation content.
+
+No explanation or extra text.
+
+🎬 BEGIN NOW.
