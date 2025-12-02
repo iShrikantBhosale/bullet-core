@@ -1,17 +1,30 @@
 """
-Autograd operations with forward and backward passes
-All operations use Phase 1 CPU kernels for forward pass
+Stabilized Autograd Operations
+Fixes gradient explosion in embedding layers
 """
 
 import numpy as np
 from .tensor import Tensor
 from . import ops
 
+# Gradient clipping threshold
+MAX_GRAD_NORM = 10.0
+
+def clip_gradient(grad):
+    """Clip gradient to prevent explosion"""
+    if grad is None:
+        return None
+    
+    grad_norm = np.linalg.norm(grad)
+    if grad_norm > MAX_GRAD_NORM:
+        return grad * (MAX_GRAD_NORM / grad_norm)
+    return grad
+
 # ===== MATRIX OPERATIONS =====
 
 def matmul(a: Tensor, b: Tensor) -> Tensor:
     """
-    Matrix multiplication with autograd
+    Matrix multiplication with stabilized autograd
     
     Forward: C = A @ B
     Backward: dL/dA = dL/dC @ B.T, dL/dB = A.T @ dL/dC
@@ -21,16 +34,18 @@ def matmul(a: Tensor, b: Tensor) -> Tensor:
     out = Tensor(out_data, requires_grad=(a.requires_grad or b.requires_grad),
                  _children=(a, b), _op='matmul')
     
-    # Backward pass
+    # Backward pass with gradient clipping
     def _backward():
         if a.requires_grad:
             # dL/dA = dL/dOut @ B.T
             grad_a = ops.matmul(out.grad, b.data, transpose_B=True)
+            grad_a = clip_gradient(grad_a)  # STABILIZATION
             a.grad = grad_a if a.grad is None else a.grad + grad_a
         
         if b.requires_grad:
             # dL/dB = A.T @ dL/dOut
             grad_b = ops.matmul(a.data, out.grad, transpose_A=True)
+            grad_b = clip_gradient(grad_b)  # STABILIZATION
             b.grad = grad_b if b.grad is None else b.grad + grad_b
     
     out._backward = _backward
@@ -86,9 +101,11 @@ def mul(a: Tensor, b: Tensor) -> Tensor:
     def _backward():
         if a.requires_grad:
             grad_a = unbroadcast(out.grad * b.data, a.shape)
+            grad_a = clip_gradient(grad_a)  # STABILIZATION
             a.grad = grad_a if a.grad is None else a.grad + grad_a
         if b.requires_grad:
             grad_b = unbroadcast(out.grad * a.data, b.shape)
+            grad_b = clip_gradient(grad_b)  # STABILIZATION
             b.grad = grad_b if b.grad is None else b.grad + grad_b
     
     out._backward = _backward
@@ -120,6 +137,7 @@ def pow_op(a: Tensor, power: float) -> Tensor:
     def _backward():
         if a.requires_grad:
             grad_a = power * (a.data ** (power - 1)) * out.grad
+            grad_a = clip_gradient(grad_a)  # STABILIZATION
             a.grad = grad_a if a.grad is None else a.grad + grad_a
     
     out._backward = _backward
@@ -194,7 +212,7 @@ def relu(x: Tensor) -> Tensor:
 
 def softmax(x: Tensor, axis=-1) -> Tensor:
     """
-    Softmax activation with autograd
+    Softmax activation with stabilized autograd
     
     Forward: softmax(x) = exp(x) / sum(exp(x))
     Backward: Jacobian-vector product
@@ -214,6 +232,7 @@ def softmax(x: Tensor, axis=-1) -> Tensor:
             
             sum_term = (grad_out * s).sum(axis=axis, keepdims=True)
             grad_x = s * (grad_out - sum_term)
+            grad_x = clip_gradient(grad_x)  # STABILIZATION
             
             x.grad = grad_x if x.grad is None else x.grad + grad_x
     
@@ -222,9 +241,9 @@ def softmax(x: Tensor, axis=-1) -> Tensor:
 
 # ===== NORMALIZATION =====
 
-def rmsnorm(x: Tensor, weight: Tensor, eps=1e-6) -> Tensor:
+def rmsnorm(x: Tensor, weight: Tensor, eps=1e-5) -> Tensor:  # Increased eps for stability
     """
-    RMS Normalization with autograd
+    RMS Normalization with stabilized autograd
     
     Forward: y = (x / rms(x)) * weight
     where rms(x) = sqrt(mean(x^2) + eps)
@@ -249,20 +268,22 @@ def rmsnorm(x: Tensor, weight: Tensor, eps=1e-6) -> Tensor:
             
             # Gradient w.r.t input (chain rule through normalization)
             grad_x = (grad_norm - normalized * (grad_norm * normalized).sum(axis=-1, keepdims=True)) / rms
+            grad_x = clip_gradient(grad_x)  # STABILIZATION
             
             x.grad = grad_x if x.grad is None else x.grad + grad_x
         
         if weight.requires_grad:
             # dL/dweight = sum(dL/dout * normalized)
             grad_w = (out.grad * normalized).sum(axis=tuple(range(len(x.data.shape)-1)))
+            grad_w = clip_gradient(grad_w)  # STABILIZATION
             weight.grad = grad_w if weight.grad is None else weight.grad + grad_w
     
     out._backward = _backward
     return out
 
-def layernorm(x: Tensor, weight: Tensor, bias: Tensor, eps=1e-6) -> Tensor:
+def layernorm(x: Tensor, weight: Tensor, bias: Tensor, eps=1e-5) -> Tensor:  # Increased eps
     """
-    Layer Normalization with autograd
+    Layer Normalization with stabilized autograd
     
     Forward: y = ((x - mean) / sqrt(var + eps)) * weight + bias
     """
@@ -291,15 +312,18 @@ def layernorm(x: Tensor, weight: Tensor, bias: Tensor, eps=1e-6) -> Tensor:
             grad_mean = (grad_norm * -1 / std).sum(axis=-1, keepdims=True) + grad_var * (-2 * (x.data - mean)).sum(axis=-1, keepdims=True) / dim
             
             grad_x = grad_norm / std + grad_var * 2 * (x.data - mean) / dim + grad_mean / dim
+            grad_x = clip_gradient(grad_x)  # STABILIZATION
             
             x.grad = grad_x if x.grad is None else x.grad + grad_x
         
         if weight.requires_grad:
             grad_w = (out.grad * normalized).sum(axis=tuple(range(len(x.data.shape)-1)))
+            grad_w = clip_gradient(grad_w)  # STABILIZATION
             weight.grad = grad_w if weight.grad is None else weight.grad + grad_w
         
         if bias.requires_grad:
             grad_b = out.grad.sum(axis=tuple(range(len(x.data.shape)-1)))
+            grad_b = clip_gradient(grad_b)  # STABILIZATION
             bias.grad = grad_b if bias.grad is None else bias.grad + grad_b
     
     out._backward = _backward
@@ -336,14 +360,17 @@ def transpose_op(x: Tensor) -> Tensor:
     return out
 
 def log_op(x: Tensor) -> Tensor:
-    """Natural logarithm"""
-    out_data = np.log(x.data)
+    """Natural logarithm with stabilization"""
+    # Clip to prevent log(0)
+    x_clipped = np.maximum(x.data, 1e-10)
+    out_data = np.log(x_clipped)
     out = Tensor(out_data, requires_grad=x.requires_grad,
                  _children=(x,), _op='log')
     
     def _backward():
         if x.requires_grad:
-            grad_x = out.grad / x.data
+            grad_x = out.grad / np.maximum(x.data, 1e-10)
+            grad_x = clip_gradient(grad_x)  # STABILIZATION
             x.grad = grad_x if x.grad is None else x.grad + grad_x
             
     out._backward = _backward

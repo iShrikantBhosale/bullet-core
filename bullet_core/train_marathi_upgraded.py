@@ -1,6 +1,6 @@
 """
 UPGRADED Marathi Philosophy Transformer Training
-Implements all 5 improvements for production-quality model
+Implements production-grade stability improvements
 """
 
 import json
@@ -17,6 +17,38 @@ from python.tensor import Tensor
 from python import nn
 from python.transformer import GPT
 from python.optim import AdamW
+
+# Import training utilities
+try:
+    from python.training_utils import (
+        set_seed, validate_config, CheckpointManager, 
+        TrainingLogger, sanitize_text
+    )
+    UTILS_AVAILABLE = True
+except ImportError:
+    print("⚠️  Training utilities not available, using basic mode")
+    UTILS_AVAILABLE = False
+
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
+
+# Set deterministic seed for reproducible results
+if UTILS_AVAILABLE:
+    set_seed(42)
+
+# Model Architecture
+D_MODEL = 256
+N_HEAD = 4
+N_LAYER = 8
+FFN_HIDDEN = 1024
+BLOCK_SIZE = 256  # Reduced for stability
+
+# Training Parameters
+MAX_STEPS = 10000
+BATCH_SIZE = 1
+LEARNING_RATE = 5e-5  # Conservative
+WEIGHT_DECAY = 1e-2
 
 # Import from python subdirectory
 from python.tokenizer import BPETokenizer

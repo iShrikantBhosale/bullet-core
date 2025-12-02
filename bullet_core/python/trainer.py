@@ -123,7 +123,23 @@ class Trainer:
             # Log progress
             if (batch_idx + 1) % self.log_interval == 0:
                 avg_loss = epoch_loss / num_batches
-                print(f"  Batch {batch_idx + 1} | Loss: {avg_loss:.4f} | LR: {self.optimizer.lr:.6f}")
+                
+                # Calculate ETA
+                elapsed_epoch = time.time() - start_time
+                batches_done = batch_idx + 1
+                batches_total = len(self.train_data)
+                batches_left = batches_total - batches_done
+                sec_per_batch = elapsed_epoch / batches_done
+                eta_seconds = int(batches_left * sec_per_batch)
+                eta_str = f"{eta_seconds // 60}m {eta_seconds % 60}s"
+                
+                # Memory usage (if available)
+                mem_str = ""
+                if torch.cuda.is_available():
+                    mem = torch.cuda.memory_allocated() / 1024**3
+                    mem_str = f" mem={mem:.2f}GB"
+                
+                print(f"[Step {batches_done}/{batches_total}] loss={avg_loss:.4f} lr={self.optimizer.lr:.6f} eta={eta_str}{mem_str}")
         
         avg_loss = epoch_loss / num_batches if num_batches > 0 else 0.0
         elapsed = time.time() - start_time
