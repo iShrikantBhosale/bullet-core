@@ -207,11 +207,47 @@
             text-align: center;
             padding: 2rem;
         }
+
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-bar a:hover {
+            color: #667eea;
+        }
     </style>
 </head>
 
 <body>
-    <section class="hero">
+    <nav class="nav-bar">
+        <a href="https://ishrikantbhosale.github.io/bullet-core/">🏠 Home</a>
+        <a href="https://ishrikantbhosale.github.io/bullet-core/education.html">🎓 Education</a>
+        <a href="https://github.com/iShrikantBhosale/bullet-core">💻 GitHub</a>
+        <a
+            href="https://colab.research.google.com/github/iShrikantBhosale/bullet-core/blob/master/Bullet_OS_Education.ipynb">🚀
+            Try Colab</a>
+    </nav>
+
+    <section class="hero" style="margin-top: 60px;">
         <div class="hero-content">
             <h1>🎓 Bullet OS Education</h1>
             <p class="tagline">Train Real AI Models<br>On Your College Computer</p>
@@ -392,6 +428,7 @@
             <p>🇮🇳 Made in India | Democratizing AI Education</p>
             <p style="margin-top: 1rem;">© 2025 Bullet OS. MIT License.</p>
             <p style="margin-top: 0.5rem;">
+                <a href="https://ishrikantbhosale.github.io/bullet-core/" style="color: #667eea;">Website</a> |
                 <a href="https://github.com/iShrikantBhosale/bullet-core" style="color: #667eea;">GitHub</a> |
                 <a href="https://github.com/iShrikantBhosale/bullet-core/issues" style="color: #667eea;">Support</a> |
                 <a href="https://github.com/iShrikantBhosale/bullet-core/discussions"
