@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bullet OS Education - Turn Your Lab into an AI Research Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content {
+            max-width: 900px;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero .tagline {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .features {
+            background: white;
+            padding: 5rem 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .stats {
+            background: #1a1a1a;
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 2rem auto 0;
+        }
+
+        .stat-item h4 {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .download {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        .download-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .download-box h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .download-box ul {
+            list-style: none;
+            text-align: left;
+            margin: 2rem 0;
+        }
+
+        .download-box li {
+            padding: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .download-box li::before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>🎓 Bullet OS Education</h1>
+            <p class="tagline">Turn Your College Computer Lab<br>into an AI Research Lab</p>
+            <p class="subtitle">No GPU. No Cloud. No Cost.</p>
+            <div class="cta-buttons">
+                <a href="#download" class="btn btn-primary">Download Teaching Pack</a>
+                <a href="https://colab.research.google.com/github/iShrikantBhosale/bullet-core/blob/master/Bullet_OS_Education.ipynb"
+                    class="btn btn-secondary">Try on Colab</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Bullet OS for Education?</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Zero Cost</h3>
+                    <p>No expensive GPUs or cloud credits needed. Runs on any CPU - even old computers work!</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Real AI</h3>
+                    <p>Train actual Transformer models, not toy examples. Same tech used in production systems.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast Results</h3>
+                    <p>See your model learning in minutes, not hours. Perfect for classroom demonstrations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Complete Curriculum</h3>
+                    <p>PDF manual, sample datasets, exercises, and Colab notebooks - everything included.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔬</div>
+                    <h3>Hands-On Learning</h3>
+                    <p>Students build, train, quantize, and deploy models - not just theory.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Multilingual</h3>
+                    <p>Works with any language. Includes Marathi model as example.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <h2 class="section-title">By the Numbers</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h4>1-2MB</h4>
+                    <p>Model Size (BQ4)</p>
+                </div>
+                <div class="stat-item">
+                    <h4>20+</h4>
+                    <p>Tokens/Second</p>
+                </div>
+                <div class="stat-item">
+                    <h4>4GB</h4>
+                    <p>RAM Required</p>
+                </div>
+                <div class="stat-item">
+                    <h4>15min</h4>
+                    <p>First Model</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="download" id="download">
+        <div class="container">
+            <h2 class="section-title">Get Started - Three Ways</h2>
+
+            <div class="feature-grid" style="max-width: 1000px; margin: 2rem auto;">
+                <div class="download-box" style="background: rgba(255,255,255,0.15);">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Google Colab</h3>
+                    <p style="margin: 1.5rem 0;">Start training in your browser - no installation needed!</p>
+                    <ul style="text-align: left; margin: 1rem 0;">
+                        <li>One-click setup</li>
+                        <li>Interactive tutorial</li>
+                        <li>Free GPU access</li>
+                    </ul>
+                    <a href="https://colab.research.google.com/github/iShrikantBhosale/bullet-core/blob/master/Bullet_OS_Education.ipynb"
+                        class="btn btn-primary" style="margin-top: 1rem;">Open in Colab</a>
+                </div>
+
+                <div class="download-box" style="background: rgba(255,255,255,0.15);">
+                    <div class="feature-icon">📊</div>
+                    <h3>Training Dashboard</h3>
+                    <p style="margin: 1.5rem 0;">Visual interface for training and monitoring models</p>
+                    <ul style="text-align: left; margin: 1rem 0;">
+                        <li>Real-time metrics</li>
+                        <li>Dataset upload</li>
+                        <li>Model export</li>
+                    </ul>
+                    <a href="https://github.com/iShrikantBhosale/bullet-core/tree/master/bullet_core/dashboard"
+                        class="btn btn-primary" style="margin-top: 1rem;">View Dashboard</a>
+                </div>
+
+                <div class="download-box" style="background: rgba(255,255,255,0.15);">
+                    <div class="feature-icon">💻</div>
+                    <h3>Full Repository</h3>
+                    <p style="margin: 1.5rem 0;">Clone the complete source code and documentation</p>
+                    <ul style="text-align: left; margin: 1rem 0;">
+                        <li>Education manual</li>
+                        <li>Sample datasets</li>
+                        <li>All source code</li>
+                    </ul>
+                    <a href="https://github.com/iShrikantBhosale/bullet-core" class="btn btn-primary"
+                        style="margin-top: 1rem;">Clone Repo</a>
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 15px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <h3 style="margin-bottom: 1rem;">📚 Quick Start Command</h3>
+                <code
+                    style="background: rgba(0,0,0,0.3); padding: 1rem; display: block; border-radius: 8px; font-size: 1rem;">
+                    git clone https://github.com/iShrikantBhosale/bullet-core.git<br>
+                    cd bullet-core<br>
+                    pip install numpy<br>
+                    python bullet_core/train_production.py --config bullet_core/configs/marathi_small.yaml
+                </code>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>🇮🇳 Made in India | Democratizing AI Education</p>
+            <p style="margin-top: 1rem;">© 2025 Bullet OS. MIT License.</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="https://github.com/iShrikantBhosale/bullet-core" style="color: #667eea;">GitHub</a> |
+                <a href="https://github.com/iShrikantBhosale/bullet-core/issues" style="color: #667eea;">Support</a>
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>
