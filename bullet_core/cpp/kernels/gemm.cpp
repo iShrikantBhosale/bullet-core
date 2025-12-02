@@ -20,7 +20,8 @@ static void gemm_kernel_f32(
     int lda, int ldb, int ldc
 ) {
     for (int i = 0; i < M; ++i) {
-        for (int j = 0; j < N; j += SIMD_WIDTH) {
+        int j = 0;
+        for (; j <= N - SIMD_WIDTH; j += SIMD_WIDTH) {
             __m256 c_vec = _mm256_loadu_ps(&C[i * ldc + j]);
             
             for (int k = 0; k < K; ++k) {
