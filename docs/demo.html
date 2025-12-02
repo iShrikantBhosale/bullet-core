@@ -386,12 +386,12 @@
         async function initWASM() {
             try {
                 console.log('Loading Bullet WASM module...');
-                const BulletModule = await import('../wasm_build/bullet.js');
+                const BulletModule = await import('./bullet.js');
                 bulletModule = await BulletModule.default();
 
                 // Try to load model
                 try {
-                    const loaded = bulletModule.loadModel('model.bullet', 'vocab.txt');
+                    const loaded = bulletModule.loadModel('model.bullet', 'vocab.json');
                     isModelLoaded = loaded;
                     console.log('Model loaded:', isModelLoaded);
                 } catch (e) {
