@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bullet OS - WASM Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        textarea,
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus,
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output-box {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 100px;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 2rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Bullet OS - WASM Dashboard</h1>
+            <p>AI Inference in Your Browser - No Server Required</p>
+        </div>
+
+        <div class="dashboard">
+            <!-- Status -->
+            <div id="status" class="status loading" style="display: none;">
+                Loading WASM module...
+            </div>
+
+            <!-- Model Info -->
+            <div class="section">
+                <h2>📦 Model Information</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3 id="modelSize">~160KB</h3>
+                        <p>WASM Size</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="loadTime">-</h3>
+                        <p>Load Time</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="inferenceSpeed">-</h3>
+                        <p>Tokens/Sec</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Generation -->
+            <div class="section">
+                <h2>✨ Text Generation</h2>
+                <div class="input-group">
+                    <label for="prompt">Prompt:</label>
+                    <textarea id="prompt" placeholder="Enter your prompt here...">जीवनाचा अर्थ</textarea>
+                </div>
+                <div class="input-group">
+                    <label for="maxTokens">Max Tokens:</label>
+                    <input type="number" id="maxTokens" value="20" min="1" max="100">
+                </div>
+                <button class="btn" onclick="generateText()">Generate</button>
+                <div class="output-box" id="generatedText">Output will appear here...</div>
+            </div>
+
+            <!-- Sentiment Analysis -->
+            <div class="section">
+                <h2>💭 Sentiment Analysis</h2>
+                <div class="input-group">
+                    <label for="sentimentText">Text to Analyze:</label>
+                    <textarea id="sentimentText"
+                        placeholder="Enter text for sentiment analysis...">This is amazing!</textarea>
+                </div>
+                <button class="btn" onclick="analyzeSentiment()">Analyze</button>
+                <div class="output-box" id="sentimentResult">Sentiment will appear here...</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Created by Shrikant Bhosale</strong> | Mentored by <a href="https://hintson.com"
+                    style="color: white;">Hintson.com</a></p>
+            <p>🇮🇳 Made in India | © 2025 Bullet OS</p>
+        </div>
+    </div>
+
+    <script>
+        let bulletModule = null;
+        let loadStartTime = 0;
+
+        // Show status
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            statusEl.style.display = 'block';
+        }
+
+        // Load WASM module
+        async function loadWASM() {
+            loadStartTime = performance.now();
+            showStatus('Loading WASM module...', 'loading');
+
+            try {
+                // Load the Bullet WASM module
+                const BulletModule = await import('./bullet.js');
+                bulletModule = await BulletModule.default();
+
+                const loadTime = ((performance.now() - loadStartTime) / 1000).toFixed(2);
+                document.getElementById('loadTime').textContent = loadTime + 's';
+
+                showStatus('✅ WASM module loaded successfully!', 'success');
+
+                // Try to load model (if available)
+                try {
+                    const loaded = bulletModule.loadModel('model.bullet', 'vocab.txt');
+                    if (loaded) {
+                        showStatus('✅ Model loaded and ready!', 'success');
+                    } else {
+                        showStatus('⚠️ WASM loaded, but model file not found. Using demo mode.', 'success');
+                    }
+                } catch (e) {
+                    showStatus('⚠️ WASM loaded. Demo mode (model loading not implemented yet).', 'success');
+                }
+
+            } catch (error) {
+                console.error('WASM load error:', error);
+                showStatus('❌ Error loading WASM: ' + error.message, 'error');
+            }
+        }
+
+        // Generate text
+        function generateText() {
+            const prompt = document.getElementById('prompt').value;
+            const maxTokens = parseInt(document.getElementById('maxTokens').value);
+            const outputEl = document.getElementById('generatedText');
+
+            if (!bulletModule) {
+                outputEl.textContent = '❌ WASM module not loaded yet';
+                return;
+            }
+
+            try {
+                const startTime = performance.now();
+                const result = bulletModule.generate(prompt, maxTokens);
+                const elapsed = (performance.now() - startTime) / 1000;
+                const speed = (maxTokens / elapsed).toFixed(1);
+
+                document.getElementById('inferenceSpeed').textContent = speed;
+                outputEl.textContent = result + `\\n\\n⏱️ Time: ${elapsed.toFixed(2)}s | Speed: ${speed} tok/s`;
+
+            } catch (error) {
+                outputEl.textContent = '❌ Error: ' + error.message;
+            }
+        }
+
+        // Analyze sentiment
+        function analyzeSentiment() {
+            const text = document.getElementById('sentimentText').value;
+            const outputEl = document.getElementById('sentimentResult');
+
+            if (!bulletModule) {
+                outputEl.textContent = '❌ WASM module not loaded yet';
+                return;
+            }
+
+            try {
+                const result = bulletModule.sentiment(text);
+                outputEl.textContent = `Sentiment: ${result}`;
+            } catch (error) {
+                outputEl.textContent = '❌ Error: ' + error.message;
+            }
+        }
+
+        // Load WASM on page load
+        window.addEventListener('load', loadWASM);
+    </script>
+</body>
+
+</html>
