@@ -252,6 +252,18 @@ class ReLU(Module):
     def __repr__(self):
         return "ReLU()"
 
+class GELU(Module):
+    """
+    GELU activation: 0.5 * x * (1 + tanh(sqrt(2/pi) * (x + 0.044715 * x^3)))
+    """
+    def forward(self, x: Tensor) -> Tensor:
+        # 0.5 * x * (1 + tanh(sqrt(2/pi) * (x + 0.044715 * x^3)))
+        s = np.sqrt(2 / np.pi)
+        return 0.5 * x * (1 + (s * (x + 0.044715 * x**3)).tanh())
+    
+    def __repr__(self):
+        return "GELU()"
+
 class CrossEntropyLoss(Module):
     """
     Cross Entropy Loss
@@ -285,65 +297,11 @@ class CrossEntropyLoss(Module):
         # Element-wise: y_onehot * probs gives us the selected probabilities
         selected_probs = (y_onehot_tensor * probs).sum(axis=1)  # (N,)
         
-        # Log of selected probabilities
+        # Log of selected probabilities (Tensor.log handles clipping)
         log_probs = selected_probs.log()
         
         # Mean negative log likelihood
         loss = -log_probs.mean()
-        
-        return loss
-
-# Add log method to Tensor
-def log(self):
-    from .autograd import log_op
-    return log_op(self)
-Tensor.log = log
-
-class CrossEntropyLoss(Module):
-    """
-    Cross Entropy Loss
-    Combines LogSoftmax and NLLLoss
-    """
-    def __init__(self):
-        super().__init__()
-        
-    def forward(self, logits: Tensor, target: Tensor) -> Tensor:
-        """
-        Args:
-            logits: (B, T, V) or (B, V)
-            target: (B, T) or (B,) - indices
-        """
-        # Flatten
-        V = logits.shape[-1]
-        logits_flat = logits.reshape(-1, V)
-        target_flat = target.reshape(-1)
-        
-        # Log Softmax
-        # log(exp(x_i) / sum(exp(x_j))) = x_i - log(sum(exp(x_j)))
-        # Max trick for stability
-        # max_logits = logits_flat.data.max(axis=1, keepdims=True)
-        # We need to do this with Tensors to track gradients
-        # But max() reduction might not be implemented in autograd yet.
-        # Let's implement a simplified version using the provided softmax
-        
-        # softmax = exp(x) / sum(exp(x))
-        probs = logits_flat.softmax(axis=-1)
-        
-        # NLL: -log(probs[target])
-        # We need to select the probabilities corresponding to targets
-        # This requires advanced indexing which might not be in Tensor
-        
-        # Workaround: One-hot encoding targets
-        N = logits_flat.shape[0]
-        
-        # Create one-hot targets (numpy)
-        y_onehot = np.zeros((N, V), dtype=np.float32)
-        y_onehot[np.arange(N), target_flat.data.astype(int)] = 1.0
-        y_onehot = Tensor(y_onehot, requires_grad=False)
-        
-        # Cross Entropy = -sum(y_true * log(y_pred))
-        # Add epsilon to avoid log(0)
-        loss = -(y_onehot * (probs + 1e-9).log()).sum() / N
         
         return loss
 

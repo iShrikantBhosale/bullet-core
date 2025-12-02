@@ -150,6 +150,11 @@ class Tensor:
         from .autograd import softmax
         return softmax(self, axis)
     
+    def tanh(self):
+        """Tanh activation"""
+        from .autograd import tanh_op
+        return tanh_op(self)
+    
     # Normalization
     def rmsnorm(self, weight, eps=1e-6):
         """RMS Normalization"""

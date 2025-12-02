@@ -338,7 +338,7 @@ class FeedForward(nn.Module):
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(d_model, d_ff),
-            nn.ReLU(), # Or GELU if available
+            nn.GELU(), # Upgraded to GELU for stability
             nn.Linear(d_ff, d_model)
         )
 

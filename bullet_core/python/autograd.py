@@ -359,6 +359,22 @@ def transpose_op(x: Tensor) -> Tensor:
     out._backward = _backward
     return out
 
+def tanh_op(x: Tensor) -> Tensor:
+    """Hyperbolic tangent with autograd"""
+    out_data = np.tanh(x.data)
+    out = Tensor(out_data, requires_grad=x.requires_grad,
+                 _children=(x,), _op='tanh')
+    
+    def _backward():
+        if x.requires_grad:
+            # d/dx tanh(x) = 1 - tanh(x)^2
+            grad_x = out.grad * (1.0 - out_data ** 2)
+            grad_x = clip_gradient(grad_x)  # STABILIZATION
+            x.grad = grad_x if x.grad is None else x.grad + grad_x
+            
+    out._backward = _backward
+    return out
+
 def log_op(x: Tensor) -> Tensor:
     """Natural logarithm with stabilization"""
     # Clip to prevent log(0)
