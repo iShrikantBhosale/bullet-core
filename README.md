@@ -134,6 +134,38 @@ python bullet_core/train_production.py --config configs/your_config.yaml
 python test_checkpoints.py
 ```
 
+## 🌍 Community Training Continuation
+
+Want to continue training the Marathi model? Just run:
+
+```bash
+# Resume from the latest checkpoint
+python bullet_core/train_production.py \
+  --config bullet_core/configs/marathi_small.yaml \
+  --resume-from marathi_checkpoints_stable/checkpoint_step_800.pkl \
+  --steps 50000
+
+# Or train from scratch with your own dataset
+# 1. Place your JSONL dataset in the project root
+# 2. Update the config file to point to your dataset:
+#    Edit bullet_core/configs/marathi_small.yaml
+#    Change: dataset_path: "your_dataset.jsonl"
+# 3. Run training:
+python bullet_core/train_production.py --config bullet_core/configs/marathi_small.yaml
+```
+
+**Dataset Format** (JSONL):
+```json
+{"text": "तुमचा प्रशिक्षण मजकूर येथे"}
+{"text": "अधिक प्रशिक्षण डेटा"}
+```
+
+**Tips for Better Results**:
+- Use diverse, clean text data
+- Aim for 10K+ steps for convergence
+- Lower learning rate (0.0001) for fine-tuning
+- Monitor `logs/training.log` for progress
+
 ## 🔬 Technical Details
 
 ### BQ4 Quantization
