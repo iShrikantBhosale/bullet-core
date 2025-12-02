@@ -2,7 +2,7 @@
 
 **The AI Operating System for the Edge**
 
-[![Bullet OS Website](https://img.shields.io/badge/Website-Live-FF9933?style=for-the-badge)](https://bullet-os.github.io/bullet-core/)
+[![Bullet OS Website](https://img.shields.io/badge/Website-Live-FF9933?style=for-the-badge)](https://iShrikantBhosale.github.io/bullet-core/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 > **Created by Shrikant Bhosale** | **Mentored by [Hintson.com](https://hintson.com)**
