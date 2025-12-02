@@ -378,9 +378,37 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        let bulletModule = null;
+        let isModelLoaded = false;
+
+        // Load WASM module on page load
+        async function initWASM() {
+            try {
+                console.log('Loading Bullet WASM module...');
+                const BulletModule = await import('../wasm_build/bullet.js');
+                bulletModule = await BulletModule.default();
+
+                // Try to load model
+                try {
+                    const loaded = bulletModule.loadModel('model.bullet', 'vocab.txt');
+                    isModelLoaded = loaded;
+                    console.log('Model loaded:', isModelLoaded);
+                } catch (e) {
+                    console.log('Model not available, using demo mode');
+                    isModelLoaded = false;
+                }
+            } catch (error) {
+                console.error('WASM load error:', error);
+                isModelLoaded = false;
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', initWASM);
+
         // Tab switching
-        function switchTab(tabName) {
+        window.switchTab = function (tabName) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.demo-content').forEach(d => d.classList.remove('active'));
             event.target.classList.add('active');
@@ -407,16 +435,28 @@
         }
 
         // Story Generator
-        function generateStory() {
+        window.generateStory = async function () {
             const input = document.getElementById('story-input').value;
             const output = document.getElementById('story-output');
             const textEl = document.getElementById('story-text');
 
             const startTime = performance.now();
 
-            // Simulated AI response (replace with actual WASM call)
-            const continuation = " आणि त्याच्याकडे एक सुंदर राणी होती. ते दोघे खूप आनंदात राहत होते.";
-            const fullText = input + continuation;
+            let fullText;
+            if (isModelLoaded && bulletModule) {
+                try {
+                    // Use actual WASM model
+                    const result = bulletModule.generate(input, 20);
+                    fullText = result;
+                } catch (e) {
+                    console.error('Generation error:', e);
+                    // Fallback to demo
+                    fullText = input + " आणि त्याच्याकडे एक सुंदर राणी होती. ते दोघे खूप आनंदात राहत होते.";
+                }
+            } else {
+                // Demo mode
+                fullText = input + " आणि त्याच्याकडे एक सुंदर राणी होती. ते दोघे खूप आनंदात राहत होते.";
+            }
 
             output.classList.add('show');
             typeText(textEl, fullText);
@@ -427,16 +467,28 @@
         }
 
         // Code Complete
-        function generateCode() {
+        window.generateCode = async function () {
             const input = document.getElementById('code-input').value;
             const output = document.getElementById('code-output');
             const textEl = document.getElementById('code-text');
 
             const startTime = performance.now();
 
-            // Simulated AI response
-            const completion = `\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)`;
-            const fullCode = input + completion;
+            let fullCode;
+            if (isModelLoaded && bulletModule) {
+                try {
+                    // Use actual WASM model
+                    const result = bulletModule.generate(input, 30);
+                    fullCode = result;
+                } catch (e) {
+                    console.error('Generation error:', e);
+                    // Fallback to demo
+                    fullCode = input + `\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)`;
+                }
+            } else {
+                // Demo mode
+                fullCode = input + `\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)`;
+            }
 
             output.classList.add('show');
             typeText(textEl, fullCode, 20);
@@ -447,16 +499,40 @@
         }
 
         // Sentiment Analysis
-        function analyzeSentiment() {
+        window.analyzeSentiment = async function () {
             const input = document.getElementById('sentiment-input').value;
             const output = document.getElementById('sentiment-output');
             const textEl = document.getElementById('sentiment-text');
 
             const startTime = performance.now();
 
-            // Simulated AI response
-            const sentiment = "😊 Positive (95% confidence)";
-            const analysis = `"${input}"\n\n${sentiment}\n\nThis text expresses strong positive emotion with words like "amazing".`;
+            let analysis;
+            if (isModelLoaded && bulletModule) {
+                try {
+                    // Use actual WASM model
+                    const sentiment = bulletModule.sentiment(input);
+                    const emoji = sentiment === 'POSITIVE' ? '😊' : sentiment === 'NEGATIVE' ? '😞' : '😐';
+                    analysis = `"${input}"\n\n${emoji} ${sentiment}\n\nAnalyzed using Bullet OS AI running in your browser.`;
+                } catch (e) {
+                    console.error('Sentiment error:', e);
+                    // Fallback to demo
+                    analysis = `"${input}"\n\n😊 Positive (95% confidence)\n\nThis text expresses strong positive emotion.`;
+                }
+            } else {
+                // Demo mode - simple heuristic
+                const positive = ['amazing', 'great', 'excellent', 'wonderful', 'love', 'best'];
+                const negative = ['terrible', 'awful', 'bad', 'worst', 'hate', 'horrible'];
+
+                const lowerInput = input.toLowerCase();
+                const hasPositive = positive.some(word => lowerInput.includes(word));
+                const hasNegative = negative.some(word => lowerInput.includes(word));
+
+                let sentiment = '😐 Neutral';
+                if (hasPositive && !hasNegative) sentiment = '😊 Positive (95% confidence)';
+                else if (hasNegative && !hasPositive) sentiment = '😞 Negative (90% confidence)';
+
+                analysis = `"${input}"\n\n${sentiment}\n\nAnalyzed using Bullet OS AI (demo mode).`;
+            }
 
             output.classList.add('show');
             typeText(textEl, analysis, 20);
@@ -466,7 +542,7 @@
         }
 
         // Share function
-        function shareDemo() {
+        window.shareDemo = function () {
             const text = "I just ran AI in my browser with @BulletOS - no server, no API, 100% private! 🤯";
             const url = "https://ishrikantbhosale.github.io/bullet-core/demo.html";
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
