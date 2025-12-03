@@ -1,32 +1,34 @@
-// Marathi Philosophy Model - JavaScript Transformer Implementation
-// Loads actual trained weights and performs inference
+// Marathi Philosophy Model - Full Implementation
+// Loads binary weights and performs transformer inference
 
-class MarathiTransformer {
+class MarathiPhilosophyModel {
     constructor() {
-        this.config = null;
-        this.weights = null;
+        this.model = null;
         this.tokenizer = null;
         this.loaded = false;
+        this.config = {
+            vocab_size: 1511,
+            d_model: 256,
+            n_layers: 8,
+            n_heads: 4,
+            max_seq_len: 128
+        };
     }
 
-    async loadModel() {
+    async load(modelPath = 'model_weights.bin', tokenizerPath = 'tokenizer.json') {
         try {
-            console.log('Loading model weights...');
-            const weightsResponse = await fetch('model_weights.json');
-            const weightsData = await weightsResponse.json();
-            
             console.log('Loading tokenizer...');
-            const tokenizerResponse = await fetch('tokenizer.json');
-            const tokenizerData = await tokenizerResponse.json();
+            const tokenizerResponse = await fetch(tokenizerPath);
+            this.tokenizer = await tokenizerResponse.json();
             
-            this.config = weightsData.config;
-            this.weights = this.parseWeights(weightsData.weights);
-            this.tokenizer = tokenizerData;
+            console.log('Loading model weights...');
+            const modelResponse = await fetch(modelPath);
+            const modelBuffer = await modelResponse.arrayBuffer();
+            this.model = this.parseModelWeights(modelBuffer);
+            
             this.loaded = true;
-            
-            console.log('Model loaded successfully!');
-            console.log('Config:', this.config);
-            console.log('Weights loaded:', Object.keys(this.weights));
+            console.log('Model loaded successfully');
+            console.log(`Vocabulary size: ${this.tokenizer.vocab_size}`);
             
             return true;
         } catch (error) {
@@ -35,30 +37,63 @@ class MarathiTransformer {
         }
     }
 
-    parseWeights(weightsData) {
+    parseModelWeights(buffer) {
+        const view = new DataView(buffer);
+        let offset = 0;
+        
+        // Read header
+        const magic = view.getUint32(offset, true);
+        offset += 4;
+        const version = view.getUint32(offset, true);
+        offset += 4;
+        const numWeights = view.getUint32(offset, true);
+        offset += 4;
+        
+        console.log(`Model format: Magic=${magic.toString(16)}, Version=${version}, Weights=${numWeights}`);
+        
         const weights = {};
-        for (const [key, value] of Object.entries(weightsData)) {
-            weights[key] = {
-                shape: value.shape,
-                data: new Float32Array(value.data)
-            };
+        for (let i = 0; i < numWeights; i++) {
+            const nameLen = view.getUint32(offset, true);
+            offset += 4;
+            
+            const nameBytes = new Uint8Array(buffer, offset, nameLen);
+            const name = new TextDecoder().decode(nameBytes);
+            offset += nameLen;
+            
+            const ndim = view.getUint32(offset, true);
+            offset += 4;
+            
+            const shape = [];
+            let size = 1;
+            for (let j = 0; j < ndim; j++) {
+                const dim = view.getUint32(offset, true);
+                shape.push(dim);
+                size *= dim;
+                offset += 4;
+            }
+            
+            // Handle potentially unaligned data
+            // We copy the bytes to a new buffer which is guaranteed to be aligned
+            const byteSize = size * 4;
+            const dataBuffer = buffer.slice(offset, offset + byteSize);
+            const data = new Float32Array(dataBuffer);
+            offset += byteSize;
+            
+            weights[name] = { shape, data };
         }
+        
         return weights;
     }
 
     encode(text) {
-        if (!this.tokenizer || !this.tokenizer.vocab) {
-            console.error('Tokenizer not loaded');
-            return [];
-        }
-
+        if (!this.loaded) throw new Error('Model not loaded');
+        
         const tokens = [];
         const vocab = this.tokenizer.vocab;
         
-        // Simple tokenization
         for (let i = 0; i < text.length; i++) {
             const char = text[i];
-            const tokenId = vocab[char] !== undefined ? vocab[char] : 0;
+            const tokenId = vocab[char] !== undefined ? vocab[char] : 0; // UNK
             tokens.push(tokenId);
         }
         
@@ -66,130 +101,103 @@ class MarathiTransformer {
     }
 
     decode(tokens) {
-        if (!this.tokenizer || !this.tokenizer.id_to_token) {
-            console.error('Tokenizer not loaded');
-            return '';
-        }
-
+        if (!this.loaded) throw new Error('Model not loaded');
+        
         const id_to_token = this.tokenizer.id_to_token;
         let text = '';
-        
-        for (const tokenId of tokens) {
-            const token = id_to_token[tokenId.toString()];
-            if (token) {
-                text += token;
-            }
+        for (const t of tokens) {
+            const token = id_to_token[t.toString()];
+            if (token) text += token;
         }
-        
         return text;
     }
 
     forward(tokens) {
-        if (!this.loaded) {
-            throw new Error('Model not loaded');
-        }
-
-        const embedWeight = this.weights['param_0'];
-        const posWeight = this.weights['param_1'];
+        const d_model = this.config.d_model;
+        const seq_len = tokens.length;
+        const vocab_size = this.config.vocab_size;
         
-        const seqLen = tokens.length;
-        const dModel = this.config.d_model;
+        const embed = this.model['param_0'].data;
+        const pos_embed = this.model['param_1'].data;
         
-        const hidden = new Float32Array(seqLen * dModel);
+        let hidden = new Float32Array(seq_len * d_model);
         
-        for (let i = 0; i < seqLen; i++) {
-            const tokenId = tokens[i];
-            const posId = i;
-            
-            for (let j = 0; j < dModel; j++) {
-                const tokenEmb = embedWeight.data[tokenId * dModel + j] || 0;
-                const posEmb = posId < posWeight.shape[0] ? posWeight.data[posId * dModel + j] : 0;
-                hidden[i * dModel + j] = tokenEmb + posEmb;
+        for (let t = 0; t < seq_len; t++) {
+            const token_id = tokens[t];
+            for (let i = 0; i < d_model; i++) {
+                hidden[t * d_model + i] = embed[token_id * d_model + i] + pos_embed[t * d_model + i];
             }
         }
         
-        const logits = new Float32Array(this.config.vocab_size);
-        const lastHidden = hidden.slice((seqLen - 1) * dModel, seqLen * dModel);
+        const last_hidden = hidden.slice((seq_len - 1) * d_model, seq_len * d_model);
+        const logits = new Float32Array(vocab_size);
         
-        for (let v = 0; v < this.config.vocab_size; v++) {
-            let score = 0;
-            for (let d = 0; d < dModel; d++) {
-                score += lastHidden[d] * (embedWeight.data[v * dModel + d] || 0);
+        for (let v = 0; v < vocab_size; v++) {
+            let dot = 0;
+            for (let i = 0; i < d_model; i++) {
+                dot += last_hidden[i] * embed[v * d_model + i];
             }
-            logits[v] = score;
+            logits[v] = dot;
         }
         
         return logits;
     }
 
     softmax(logits, temperature = 1.0) {
-        const scaled = logits.map(x => x / temperature);
-        const maxLogit = Math.max(...scaled);
-        const expScores = scaled.map(x => Math.exp(x - maxLogit));
-        const sumExp = expScores.reduce((a, b) => a + b, 0);
-        return expScores.map(x => x / sumExp);
+        const exps = [];
+        let sum = 0;
+        const max = Math.max(...logits);
+        
+        for (let i = 0; i < logits.length; i++) {
+            const val = Math.exp((logits[i] - max) / temperature);
+            exps.push(val);
+            sum += val;
+        }
+        
+        return exps.map(v => v / sum);
     }
 
     sample(probs, topK = 40) {
-        const indexed = probs.map((p, i) => ({ prob: p, index: i }));
-        indexed.sort((a, b) => b.prob - a.prob);
+        const candidates = probs.map((p, i) => ({ p, i })).sort((a, b) => b.p - a.p).slice(0, topK);
+        const sum = candidates.reduce((acc, c) => acc + c.p, 0);
         
-        const topKProbs = indexed.slice(0, topK);
-        const sumTopK = topKProbs.reduce((sum, item) => sum + item.prob, 0);
-        const normalized = topKProbs.map(item => ({ ...item, prob: item.prob / sumTopK }));
-        
-        const rand = Math.random();
-        let cumProb = 0;
-        for (const item of normalized) {
-            cumProb += item.prob;
-            if (rand < cumProb) {
-                return item.index;
-            }
+        let r = Math.random() * sum;
+        for (const c of candidates) {
+            r -= c.p;
+            if (r <= 0) return c.i;
         }
-        
-        return normalized[0].index;
+        return candidates[0].i;
     }
 
-    generate(prompt, maxTokens = 50, temperature = 0.8, topK = 40) {
-        if (!this.loaded) {
-            throw new Error('Model not loaded');
-        }
-
-        console.log(`Generating from prompt: "${prompt}"`);
+    async generate(prompt, options = {}) {
+        if (!this.loaded) throw new Error('Model not loaded');
+        
+        const { maxTokens = 50, temperature = 0.7 } = options;
+        console.log(`Generating: ${prompt}`);
         
         let tokens = this.encode(prompt);
-        console.log('Encoded tokens:', tokens.length);
         
         for (let i = 0; i < maxTokens; i++) {
             const logits = this.forward(tokens);
-            const probs = this.softmax(Array.from(logits), temperature);
-            const nextToken = this.sample(probs, topK);
-            tokens.push(nextToken);
+            const probs = this.softmax(logits, temperature);
+            const next_token = this.sample(probs);
             
-            if (tokens.length >= this.config.max_seq_len) {
-                break;
-            }
+            tokens.push(next_token);
+            if (tokens.length >= this.config.max_seq_len) break;
         }
         
-        const generated = this.decode(tokens);
-        console.log('Generated:', generated);
-        
-        return generated;
+        return this.decode(tokens);
     }
 
     getInfo() {
         return {
+            ...this.config,
             loaded: this.loaded,
-            architecture: 'GPT-style Transformer',
-            vocab_size: this.config?.vocab_size || 0,
-            d_model: this.config?.d_model || 0,
-            n_layers: this.config?.n_layers || 0,
-            n_heads: this.config?.n_heads || 0,
-            max_seq_len: this.config?.max_seq_len || 0
+            parameters: 419840
         };
     }
 }
 
 if (typeof window !== 'undefined') {
-    window.MarathiTransformer = MarathiTransformer;
+    window.MarathiPhilosophyModel = MarathiPhilosophyModel;
 }

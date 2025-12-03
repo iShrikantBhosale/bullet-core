@@ -359,14 +359,17 @@
             const modelInfoDiv = document.getElementById('modelInfo');
 
             try {
-                statusDiv.innerHTML = '<div class="spinner"></div><span>Loading trained model (9MB)...</span>';
+                statusDiv.innerHTML = '<div class="spinner"></div><span>Loading official trained model (2MB)...</span>';
                 statusDiv.className = 'status-indicator status-loading';
 
-                model = new MarathiTransformer();
-                const loaded = await model.loadModel();
+                // Use the official class from the bundle
+                model = new MarathiPhilosophyModel();
+
+                // Load binary weights
+                const loaded = await model.load('model_weights.bin', 'tokenizer.json');
 
                 if (loaded) {
-                    statusDiv.innerHTML = '<span style="font-size: 1.5rem;">✅</span><span>Real trained model loaded!</span>';
+                    statusDiv.innerHTML = '<span style="font-size: 1.5rem;">✅</span><span>Official trained model loaded!</span>';
                     statusDiv.className = 'status-indicator status-ready';
                     generateBtn.disabled = false;
 
@@ -374,7 +377,7 @@
                     modelInfoDiv.innerHTML = `
                         <div class="info-item">
                             <div class="info-label">Architecture</div>
-                            <div class="info-value">${info.architecture}</div>
+                            <div class="info-value">GPT (Binary)</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Vocabulary</div>
