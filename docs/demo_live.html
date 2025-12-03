@@ -226,7 +226,6 @@
 </head>
 
 <body>
-    <!-- Tricolor Header -->
     <header class="tricolor-header">
         <div class="saffron-band"></div>
         <div class="white-band"></div>
@@ -251,7 +250,7 @@
     <section class="demo-hero">
         <h1>🎮 Live Interactive Demo</h1>
         <p style="font-size: 1.2rem; opacity: 0.95;">
-            Experience AI running directly in your browser with WebAssembly - No server required!
+            Real trained model running in your browser - No server required!
         </p>
     </section>
 
@@ -259,29 +258,28 @@
         <div class="demo-card">
             <div id="status" class="status-indicator status-loading">
                 <div class="spinner"></div>
-                <span>Loading model...</span>
+                <span>Loading trained model (9MB)...</span>
             </div>
 
             <div class="input-group">
                 <label class="input-label">📝 Enter Your Prompt (Marathi)</label>
                 <div class="example-prompts">
-                    <div class="example-chip" onclick="setPrompt('जीवनाचा अर्थ काय आहे?')">जीवनाचा अर्थ</div>
-                    <div class="example-chip" onclick="setPrompt('ज्ञान म्हणजे काय?')">ज्ञान</div>
-                    <div class="example-chip" onclick="setPrompt('सत्य शोधण्याचा मार्ग')">सत्य</div>
-                    <div class="example-chip" onclick="setPrompt('आनंद कसा मिळतो?')">आनंद</div>
+                    <div class="example-chip" onclick="setPrompt('जीवनाचा अर्थ')">जीवनाचा अर्थ</div>
+                    <div class="example-chip" onclick="setPrompt('ज्ञान')">ज्ञान</div>
+                    <div class="example-chip" onclick="setPrompt('सत्य')">सत्य</div>
+                    <div class="example-chip" onclick="setPrompt('आनंद')">आनंद</div>
                 </div>
-                <textarea id="prompt" class="prompt-input" rows="3"
-                    placeholder="जीवनाचा अर्थ काय आहे?">जीवनाचा अर्थ</textarea>
+                <textarea id="prompt" class="prompt-input" rows="3" placeholder="जीवनाचा अर्थ">जीवनाचा अर्थ</textarea>
             </div>
 
             <div class="controls-row">
                 <div class="control-group">
                     <label class="input-label">🎯 Max Tokens</label>
-                    <input type="number" id="maxTokens" class="control-input" value="100" min="10" max="500">
+                    <input type="number" id="maxTokens" class="control-input" value="50" min="10" max="100">
                 </div>
                 <div class="control-group">
                     <label class="input-label">🌡️ Temperature</label>
-                    <input type="number" id="temperature" class="control-input" value="0.7" min="0.1" max="2.0"
+                    <input type="number" id="temperature" class="control-input" value="0.8" min="0.1" max="2.0"
                         step="0.1">
                 </div>
             </div>
@@ -307,20 +305,26 @@
 
         <div class="demo-card">
             <h2 style="font-size: 1.8rem; margin-bottom: 1rem; color: #667eea;">ℹ️ About This Demo</h2>
+
+            <div
+                style="margin-bottom: 1.5rem; padding: 1.2rem; background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4caf50; border-radius: 8px;">
+                <strong style="color: #2e7d32;">✅ Real Model:</strong> This demo loads the actual trained Marathi
+                Philosophy model (420K parameters) and runs inference entirely in your browser using JavaScript!
+            </div>
+
             <p style="line-height: 1.8; font-size: 1.05rem;">
-                This demo showcases the <strong>Marathi Philosophy Model</strong> running entirely in your browser using
-                WebAssembly. The model is loaded once and runs locally - no data is sent to any server, ensuring
-                complete privacy. This demonstrates Bullet OS's capability to run AI models on edge devices with zero
-                dependencies and minimal resource usage.
+                The model was trained on Marathi philosophical texts for 4,600 steps. It uses a GPT-style transformer
+                architecture with embeddings and positional encodings. All inference happens locally in your browser -
+                no data is sent to any server.
             </p>
             <div
                 style="margin-top: 1.5rem; padding: 1.2rem; background: rgba(102, 126, 234, 0.1); border-radius: 10px;">
-                <strong style="color: #667eea;">✨ Key Features:</strong>
+                <strong style="color: #667eea;">✨ Features:</strong>
                 <ul style="margin-top: 0.8rem; line-height: 2;">
-                    <li>🔒 <strong>100% Private</strong> - All processing happens in your browser</li>
-                    <li>⚡ <strong>Fast</strong> - Optimized WASM runtime with &lt;10ms cold start</li>
-                    <li>📱 <strong>Offline-Ready</strong> - Works without internet connection</li>
-                    <li>🎯 <strong>Lightweight</strong> - Only 2.1 MB model size</li>
+                    <li>🔒 <strong>100% Private</strong> - All processing in browser</li>
+                    <li>⚡ <strong>Real Weights</strong> - Actual trained model parameters</li>
+                    <li>📱 <strong>Offline-Ready</strong> - Works without internet</li>
+                    <li>🎯 <strong>Lightweight</strong> - 9MB total (weights + tokenizer)</li>
                 </ul>
             </div>
         </div>
@@ -345,60 +349,8 @@
         </div>
     </footer>
 
-    <!-- Note: This is a placeholder. In production, you would include the actual WASM module -->
+    <script src="marathi_transformer.js"></script>
     <script>
-        // Simulated model for demo purposes
-        // In production, replace this with actual WASM module loading
-
-        class MarathiPhilosophyModel {
-            constructor() {
-                this.config = {
-                    architecture: 'Transformer',
-                    parameters: 2300000,
-                    layers: 6,
-                    dimension: 384,
-                    heads: 6,
-                    contextLength: 256,
-                    vocabSize: 8192
-                };
-            }
-
-            async load() {
-                // Simulate loading time
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                return true;
-            }
-
-            getInfo() {
-                return this.config;
-            }
-
-            async generate(prompt, options = {}) {
-                // Simulate generation time
-                await new Promise(resolve => setTimeout(resolve, 1500));
-
-                // This is a placeholder response
-                // In production, this would call the actual WASM inference
-                const responses = {
-                    'जीवनाचा अर्थ': 'जीवनाचा अर्थ म्हणजे आत्मज्ञान आणि सत्याचा शोध. प्रत्येक व्यक्तीला आपल्या अस्तित्वाचा उद्देश शोधणे आवश्यक आहे.',
-                    'ज्ञान म्हणजे काय?': 'ज्ञान म्हणजे सत्याची जाणीव. हे केवळ माहिती नसून आत्म-अनुभवातून मिळणारे प्रबोधन आहे.',
-                    'सत्य शोधण्याचा मार्ग': 'सत्य शोधण्याचा मार्ग म्हणजे आत्मचिंतन, ध्यान आणि निरंतर शिकण्याची प्रक्रिया.',
-                    'आनंद कसा मिळतो?': 'आनंद हा बाह्य गोष्टींमध्ये नसून आपल्या अंतर्मनात असतो. आत्मसंतोष आणि शांती यातूनच खरा आनंद मिळतो.'
-                };
-
-                // Find matching response or generate generic one
-                let response = 'हे एक तात्विक प्रश्न आहे ज्याचे उत्तर प्रत्येकाला स्वतःच शोधावे लागते.';
-                for (const [key, value] of Object.entries(responses)) {
-                    if (prompt.includes(key)) {
-                        response = value;
-                        break;
-                    }
-                }
-
-                return prompt + ' ' + response;
-            }
-        }
-
         let model = null;
 
         async function initModel() {
@@ -407,14 +359,14 @@
             const modelInfoDiv = document.getElementById('modelInfo');
 
             try {
-                statusDiv.innerHTML = '<div class="spinner"></div><span>Loading model...</span>';
+                statusDiv.innerHTML = '<div class="spinner"></div><span>Loading trained model (9MB)...</span>';
                 statusDiv.className = 'status-indicator status-loading';
 
-                model = new MarathiPhilosophyModel();
-                const loaded = await model.load();
+                model = new MarathiTransformer();
+                const loaded = await model.loadModel();
 
                 if (loaded) {
-                    statusDiv.innerHTML = '<span style="font-size: 1.5rem;">✅</span><span>Model loaded and ready!</span>';
+                    statusDiv.innerHTML = '<span style="font-size: 1.5rem;">✅</span><span>Real trained model loaded!</span>';
                     statusDiv.className = 'status-indicator status-ready';
                     generateBtn.disabled = false;
 
@@ -425,35 +377,31 @@
                             <div class="info-value">${info.architecture}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Parameters</div>
-                            <div class="info-value">${(info.parameters / 1000000).toFixed(1)}M</div>
+                            <div class="info-label">Vocabulary</div>
+                            <div class="info-value">${info.vocab_size.toLocaleString()}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Model Dimension</div>
+                            <div class="info-value">${info.d_model}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Layers</div>
-                            <div class="info-value">${info.layers}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Dimension</div>
-                            <div class="info-value">${info.dimension}</div>
+                            <div class="info-value">${info.n_layers}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Attention Heads</div>
-                            <div class="info-value">${info.heads}</div>
+                            <div class="info-value">${info.n_heads}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Context Length</div>
-                            <div class="info-value">${info.contextLength}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Vocabulary</div>
-                            <div class="info-value">${info.vocabSize.toLocaleString()}</div>
+                            <div class="info-label">Max Sequence</div>
+                            <div class="info-value">${info.max_seq_len}</div>
                         </div>
                     `;
                 } else {
                     throw new Error('Failed to load model');
                 }
             } catch (error) {
-                statusDiv.innerHTML = '<span style="font-size: 1.5rem;">❌</span><span>Error loading model: ' + error.message + '</span>';
+                statusDiv.innerHTML = '<span style="font-size: 1.5rem;">❌</span><span>Error: ' + error.message + '</span>';
                 statusDiv.className = 'status-indicator status-error';
                 console.error(error);
             }
@@ -476,12 +424,10 @@
                 generateBtn.innerHTML = '<div class="spinner" style="border-top-color: white;"></div> Generating...';
                 outputDiv.textContent = 'Generating...';
 
-                const output = await model.generate(prompt, {
-                    maxTokens,
-                    temperature,
-                    topK: 40
-                });
+                // Small delay to show loading state
+                await new Promise(resolve => setTimeout(resolve, 100));
 
+                const output = model.generate(prompt, maxTokens, temperature, 40);
                 outputDiv.textContent = output;
             } catch (error) {
                 outputDiv.textContent = 'Error: ' + error.message;
@@ -496,7 +442,6 @@
             document.getElementById('prompt').value = text;
         }
 
-        // Initialize on page load
         window.addEventListener('load', initModel);
     </script>
 </body>
