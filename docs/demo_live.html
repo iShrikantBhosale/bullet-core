@@ -297,7 +297,7 @@
             <div class="controls-row">
                 <div class="control-group">
                     <label class="input-label">🎯 Max Tokens</label>
-                    <input type="number" id="maxTokens" class="control-input" value="180" min="10" max="200">
+                    <input type="number" id="maxTokens" class="control-input" value="100" min="10" max="200">
                 </div>
                 <div class="control-group">
                     <label class="input-label">🌡️ Temperature</label>
@@ -500,7 +500,7 @@
                 balanced: { temp: 0.70, topP: 0.90, repPen: 1.22, presPen: 0.28, freqPen: 0.18, block: 6 },
                 creative: { temp: 0.85, topP: 0.95, repPen: 1.10, presPen: 0.0, freqPen: 0.0, block: 0 },
                 precise: { temp: 0.55, topP: 0.85, repPen: 1.30, presPen: 0.10, freqPen: 0.0, block: 2 },
-                marathi: { temp: 0.68, topP: 0.93, repPen: 1.21, presPen: 0.27, freqPen: 0.23, block: 4 }
+                marathi: { temp: 0.70, topP: 0.93, repPen: 1.21, presPen: 0.27, freqPen: 0.23, block: 4 } // Updated to 0.70
             };
 
             const s = settings[preset];
@@ -549,7 +549,7 @@
                 const output = await model.generate(prompt, {
                     maxTokens: maxTokens,
                     temperature: temperature,
-                    topK: 50,
+                    topK: 40, // Updated to 40 as per recommendation
                     topP: topP,
                     repetitionPenalty: repetitionPenalty,
                     presencePenalty: presencePenalty,
