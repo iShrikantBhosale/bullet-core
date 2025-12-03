@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Models - Bullet OS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        .models-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .models-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 900;
+        }
+
+        .models-hero p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .model-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .model-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .model-icon {
+            font-size: 4rem;
+        }
+
+        .model-title h2 {
+            font-size: 2rem;
+            margin: 0;
+            color: #667eea;
+        }
+
+        .model-title p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .model-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .spec-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .spec-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .spec-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .download-item {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .download-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+
+        .download-item h3 {
+            font-size: 1.3rem;
+            margin: 0 0 0.5rem 0;
+            color: #667eea;
+        }
+
+        .download-item .format-badge {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .download-item .size {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 1rem;
+        }
+
+        .download-item .description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            opacity: 0.85;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .demo-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 3rem auto;
+            max-width: 1200px;
+        }
+
+        .demo-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #667eea;
+        }
+
+        .usage-example {
+            background: #1e1e1e;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .usage-example code {
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .usage-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Tricolor Header -->
+    <header class="tricolor-header">
+        <div class="saffron-band"></div>
+        <div class="white-band"></div>
+        <div class="green-band"></div>
+    </header>
+
+    <nav>
+        <div class="logo">
+            <img src="logo.jpg" alt="Bullet OS"
+                style="height: 40px; border-radius: 8px; margin-right: 10px; vertical-align: middle;">
+            Bullet OS
+        </div>
+        <div class="links">
+            <a href="index.html">Home</a>
+            <a href="index.html#features">Features</a>
+            <a href="education.html">🎓 Education</a>
+            <a href="models.html" class="active">📦 Models</a>
+            <a href="https://github.com/iShrikantBhosale/bullet-core" target="_blank">GitHub ↗</a>
+        </div>
+    </nav>
+
+    <section class="models-hero">
+        <h1>🎯 Download Trained Models</h1>
+        <p>Production-ready Marathi Philosophy Model in multiple formats. Choose the format that best fits your
+            deployment needs.</p>
+    </section>
+
+    <div style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
+        <div class="model-card">
+            <div class="model-header">
+                <div class="model-icon">🧠</div>
+                <div class="model-title">
+                    <h2>Marathi Philosophy Model V1</h2>
+                    <p>Trained on Marathi philosophical texts with 2.3M parameters</p>
+                </div>
+            </div>
+
+            <div class="model-specs">
+                <div class="spec-item">
+                    <div class="spec-label">Parameters</div>
+                    <div class="spec-value">2.3M</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Vocabulary</div>
+                    <div class="spec-value">8,192</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Context Length</div>
+                    <div class="spec-value">256</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Training Steps</div>
+                    <div class="spec-value">10,000</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Final Loss</div>
+                    <div class="spec-value">2.45</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Perplexity</div>
+                    <div class="spec-value">11.6</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.8rem; margin: 2rem 0 1.5rem 0; color: #667eea;">📥 Available Formats</h3>
+
+            <div class="download-grid">
+                <!-- BQ4 Quantized -->
+                <div class="download-item">
+                    <h3>BQ4 Quantized</h3>
+                    <span class="format-badge">.bq4</span>
+                    <div class="size">📦 Size: 380 KB</div>
+                    <div class="description">
+                        Ultra-compressed 4-bit quantized format. Best for edge devices and mobile. 6.4× compression with
+                        minimal accuracy loss.
+                    </div>
+                    <a href="https://github.com/iShrikantBhosale/bullet-core/raw/master/model_exports/marathi_philosophy_v1.bq4"
+                        class="download-btn">
+                        ⬇️ Download BQ4
+                    </a>
+                </div>
+
+                <!-- INT8 Quantized -->
+                <div class="download-item">
+                    <h3>INT8 Quantized</h3>
+                    <span class="format-badge">.bullet.q8</span>
+                    <div class="size">📦 Size: 1.0 MB</div>
+                    <div class="description">
+                        8-bit quantized format. Balanced compression and accuracy. Ideal for CPU inference with good
+                        performance.
+                    </div>
+                    <a href="https://github.com/iShrikantBhosale/bullet-core/raw/master/model_exports/marathi_philosophy_v1.bullet.q8"
+                        class="download-btn">
+                        ⬇️ Download INT8
+                    </a>
+                </div>
+
+                <!-- FP16 -->
+                <div class="download-item">
+                    <h3>FP16 Half Precision</h3>
+                    <span class="format-badge">.bullet.fp16</span>
+                    <div class="size">📦 Size: 4.7 MB</div>
+                    <div class="description">
+                        16-bit floating point format. Excellent accuracy with 2× compression. Best for GPU inference.
+                    </div>
+                    <a href="https://github.com/iShrikantBhosale/bullet-core/raw/master/model_exports/marathi_philosophy_v1.bullet.fp16"
+                        class="download-btn">
+                        ⬇️ Download FP16
+                    </a>
+                </div>
+
+                <!-- Native Bullet -->
+                <div class="download-item">
+                    <h3>Native Bullet</h3>
+                    <span class="format-badge">.bullet</span>
+                    <div class="size">📦 Size: 4.7 MB</div>
+                    <div class="description">
+                        Full precision FP32 format. Maximum accuracy. Zero-copy loading with memory-mapped I/O.
+                    </div>
+                    <a href="https://github.com/iShrikantBhosale/bullet-core/raw/master/model_exports/marathi_philosophy_v1.bullet"
+                        class="download-btn">
+                        ⬇️ Download Bullet
+                    </a>
+                </div>
+
+                <!-- WASM Bundle -->
+                <div class="download-item">
+                    <h3>WASM Bundle</h3>
+                    <span class="format-badge">.zip</span>
+                    <div class="size">📦 Size: 2.1 MB</div>
+                    <div class="description">
+                        Complete WebAssembly bundle with demo. Run AI directly in browser. Includes model, tokenizer,
+                        and demo HTML.
+                    </div>
+                    <a href="https://github.com/iShrikantBhosale/bullet-core/archive/refs/heads/master.zip"
+                        class="download-btn">
+                        ⬇️ Download WASM
+                    </a>
+                </div>
+
+                <!-- Deployment Package -->
+                <div class="download-item">
+                    <h3>Deployment Package</h3>
+                    <span class="format-badge">.zip</span>
+                    <div class="size">📦 Size: 4.8 MB</div>
+                    <div class="description">
+                        Complete deployment package with model, config, tokenizer, and Python inference script. Ready to
+                        deploy.
+                    </div>
+                    <a href="https://github.com/iShrikantBhosale/bullet-core/archive/refs/heads/master.zip"
+                        class="download-btn">
+                        ⬇️ Download Package
+                    </a>
+                </div>
+
+                <!-- NumPy Weights -->
+                <div class="download-item">
+                    <h3>NumPy Weights</h3>
+                    <span class="format-badge">.npz</span>
+                    <div class="size">📦 Size: 1.9 MB</div>
+                    <div class="description">
+                        Raw model weights in NumPy format. For research, fine-tuning, or custom implementations.
+                    </div>
+                    <a href="https://github.com/iShrikantBhosale/bullet-core/raw/master/model_exports/marathi_philosophy_v1_weights.npz"
+                        class="download-btn">
+                        ⬇️ Download NPZ
+                    </a>
+                </div>
+
+                <!-- Config JSON -->
+                <div class="download-item">
+                    <h3>Model Config</h3>
+                    <span class="format-badge">.json</span>
+                    <div class="size">📦 Size: 439 B</div>
+                    <div class="description">
+                        Model configuration file with architecture details, hyperparameters, and metadata.
+                    </div>
+                    <a href="https://github.com/iShrikantBhosale/bullet-core/raw/master/model_exports/marathi_philosophy_v1_config.json"
+                        class="download-btn">
+                        ⬇️ Download Config
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Examples -->
+        <div class="demo-section">
+            <h2>💻 Usage Examples</h2>
+
+            <div class="usage-title">🚀 Quick Start with Native Bullet</div>
+            <div class="usage-example">
+                <code># Download and run the model
+wget https://github.com/iShrikantBhosale/bullet-core/raw/master/model_exports/marathi_philosophy_v1.bullet
+
+# Compile the runtime
+g++ -O3 -std=c++17 -o bullet bullet-core.cpp
+
+# Run inference
+./bullet marathi_philosophy_v1.bullet -p "जीवन म्हणजे"</code>
+            </div>
+
+            <div class="usage-title">🔥 Python Inference</div>
+            <div class="usage-example">
+                <code>from bullet_core.python.tensor import Tensor
+from bullet_core.python.model import BulletModel
+
+# Load model
+model = BulletModel.load("marathi_philosophy_v1.bullet")
+
+# Generate text
+output = model.generate("जीवन म्हणजे", max_tokens=50)
+print(output)</code>
+            </div>
+
+            <div class="usage-title">🌐 WASM in Browser</div>
+            <div class="usage-example">
+                <code>&lt;!-- Include the WASM module --&gt;
+&lt;script src="marathi_model.js"&gt;&lt;/script&gt;
+
+&lt;script&gt;
+// Load and run model
+async function runModel() {
+    const model = await loadBulletModel('model_weights.bin');
+    const output = await model.generate('जीवन म्हणजे', 50);
+    console.log(output);
+}
+&lt;/script&gt;</code>
+            </div>
+
+            <div class="usage-title">📱 Android Integration</div>
+            <div class="usage-example">
+                <code>// Kotlin
+val model = BulletModel.load(context, "marathi_philosophy_v1.bullet")
+val output = model.generate("जीवन म्हणजे", maxTokens = 50)
+Log.d("BulletOS", output)</code>
+            </div>
+        </div>
+
+        <!-- Live Demo Link -->
+        <div style="text-align: center; margin: 3rem 0;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem; color: #667eea;">🎮 Try Live Demo</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.8;">
+                Experience the model running directly in your browser with WebAssembly
+            </p>
+            <a href="demo_live.html" class="btn primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                      padding: 1.2rem 2.5rem; font-size: 1.2rem; display: inline-block;">
+                🚀 Launch Interactive Demo
+            </a>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="model-card" style="margin-top: 3rem;">
+            <h2 style="font-size: 2rem; margin-bottom: 1.5rem; color: #667eea;">📊 Performance Metrics</h2>
+
+            <div class="model-specs">
+                <div class="spec-item">
+                    <div class="spec-label">Cold Start (BQ4)</div>
+                    <div class="spec-value">&lt;10ms</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Inference Speed</div>
+                    <div class="spec-value">891/s</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Memory Usage</div>
+                    <div class="spec-value">&lt;50MB</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">CPU Utilization</div>
+                    <div class="spec-value">~30%</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(102, 126, 234, 0.1); border-radius: 12px;">
+                <h3 style="color: #667eea; margin-bottom: 1rem;">📈 Training Details</h3>
+                <ul style="line-height: 2; font-size: 1.05rem;">
+                    <li><strong>Dataset:</strong> Marathi philosophical texts (custom curated)</li>
+                    <li><strong>Training Time:</strong> ~6 hours on CPU (Intel i5)</li>
+                    <li><strong>Framework:</strong> Custom Bullet-Core training engine</li>
+                    <li><strong>Optimization:</strong> AdamW optimizer with cosine learning rate schedule</li>
+                    <li><strong>Validation Loss:</strong> 2.45 (converged)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Documentation Links -->
+        <div style="text-align: center; margin: 4rem 0 2rem 0;">
+            <h2 style="font-size: 2rem; margin-bottom: 1.5rem; color: #667eea;">📚 Need Help?</h2>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="https://github.com/iShrikantBhosale/bullet-core/blob/master/BULLET_USER_MANUAL.md"
+                    class="btn secondary" target="_blank">
+                    📘 User Manual
+                </a>
+                <a href="https://github.com/iShrikantBhosale/bullet-core/blob/master/BULLET_SPEC_v1.0.md"
+                    class="btn secondary" target="_blank">
+                    📐 File Format Spec
+                </a>
+                <a href="education.html" class="btn secondary">
+                    🎓 Training Guide
+                </a>
+                <a href="https://github.com/iShrikantBhosale/bullet-core" class="btn secondary" target="_blank">
+                    💻 Source Code
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="tricolor-footer">
+        <div class="footer-content">
+            <div class="credits">
+                <h3>Bullet OS V1.0</h3>
+                <p>Created by <strong>Shrikant Bhosale</strong></p>
+                <p>Mentored by <a href="https://hintson.com" target="_blank">Hintson.com</a></p>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/iShrikantBhosale/bullet-core" target="_blank">GitHub</a>
+                <a href="https://github.com/iShrikantBhosale/bullet-core/issues" target="_blank">Issues</a>
+                <a href="https://github.com/iShrikantBhosale/bullet-core/blob/master/LICENSE-RUNTIME"
+                    target="_blank">License</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Bullet OS. Proudly Made in India 🇮🇳</p>
+        </div>
+    </footer>
+</body>
+
+</html>
