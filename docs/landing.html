@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bullet OS - The AI Operating System for the Edge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Tricolor Header -->
+    <header class="tricolor-header">
+        <div class="saffron-band"></div>
+        <div class="white-band"></div>
+        <div class="green-band"></div>
+    </header>
+
+    <nav>
+        <div class="logo">
+            <img src="logo.jpg" alt="Bullet OS"
+                style="height: 40px; border-radius: 8px; margin-right: 10px; vertical-align: middle;">
+            Bullet OS
+        </div>
+        <div class="links">
+            <a href="#features">Features</a>
+            <a href="#quickstart">Quick Start</a>
+            <a href="models.html">📦 Models</a>
+            <a href="education.html">🎓 Education</a>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#docs">Documentation</a>
+            <a href="https://github.com/iShrikantBhosale/bullet-core" target="_blank">GitHub ↗</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>The AI Operating System<br><span class="highlight">For The Edge</span></h1>
+            <p class="subtitle">Zero Dependencies. Zero Copy. 100% Privacy.</p>
+            <p class="description">Run powerful Transformer models on edge devices with <strong>276 KB</strong> models
+                and <strong>&lt;10ms</strong> cold-start latency.</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/iShrikantBhosale/bullet-core/archive/refs/heads/master.zip"
+                    class="btn primary">Download V1.0</a>
+                <a href="#quickstart" class="btn secondary">Get Started →</a>
+            </div>
+            <div
+                style="margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 15px; backdrop-filter: blur(10px);">
+                <p style="font-size: 1.2rem; margin-bottom: 1rem; color: white;">
+                    🚀 <strong>NEW:</strong> Train Your Own AI Model in 20 Minutes - No GPU Required!
+                </p>
+                <a href="https://colab.research.google.com/github/iShrikantBhosale/bullet-core/blob/master/Bullet_Universal_Trainer.ipynb"
+                    class="btn primary"
+                    style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                        <path
+                            d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z" />
+                        <path
+                            d="M12 6c-3.309 0-6 2.691-6 6s2.691 6 6 6 6-2.691 6-6-2.691-6-6-6zm0 10c-2.206 0-4-1.794-4-4s1.794-4 4-4 4 1.794 4 4-1.794 4-4 4z" />
+                    </svg>
+                    Open Universal Trainer in Colab
+                </a>
+                <p style="font-size: 0.9rem; margin-top: 0.75rem; color: rgba(255,255,255,0.9);">
+                    Complete pipeline: Data → Tokenizer → Training → .bullet Model → Testing
+                </p>
+            </div>
+            <div
+                style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2)); border-radius: 15px; backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.2);">
+                <p style="font-size: 1.2rem; margin-bottom: 1rem; color: white;">
+                    🎯 <strong>READY TO USE:</strong> Download Pre-Trained Marathi Philosophy Model
+                </p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                    <a href="models.html" class="btn primary"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: inline-flex; align-items: center; gap: 0.5rem;">
+                        📦 Download Models
+                    </a>
+                    <a href="demo_live.html" class="btn secondary"
+                        style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        🎮 Try Live Demo
+                    </a>
+                </div>
+                <p style="font-size: 0.9rem; margin-top: 0.75rem; color: rgba(255,255,255,0.9);">
+                    Multiple formats: BQ4 (380KB), INT8 (1MB), FP16 (4.7MB), WASM Bundle & More
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <h2>Why Bullet OS?</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="icon">🚀</div>
+                <h3>BQ4 Quantization</h3>
+                <p>6.4× compression with 4-bit symmetric quantization. Run LLMs on &lt; 50MB RAM.</p>
+                <ul>
+                    <li>891 inferences/sec on CPU</li>
+                    <li>Near-FP32 accuracy</li>
+                    <li>Block-wise quantization</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="icon">⚡</div>
+                <h3>Zero-Copy Runtime</h3>
+                <p>Instant cold-start latency (&lt; 10ms) using memory-mapped I/O.</p>
+                <ul>
+                    <li>No deserialization overhead</li>
+                    <li>Direct file mapping</li>
+                    <li>Minimal memory footprint</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="icon">🧠</div>
+                <h3>Hybrid AI</h3>
+                <p>Multi-tasking engine capable of Generation and Sentiment Analysis in one pass.</p>
+                <ul>
+                    <li>Text generation</li>
+                    <li>Sentiment analysis</li>
+                    <li>Single model, multiple tasks</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="quickstart" class="quickstart">
+        <h2>Quick Start Guide</h2>
+
+        <div class="guide-section">
+            <h3>📥 Step 1: Clone the Repository</h3>
+            <div class="code-block">
+                <code>git clone https://github.com/iShrikantBhosale/bullet-core.git
+cd bullet-core</code>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <h3>🔨 Step 2: Build the Runtime</h3>
+            <div class="code-block">
+                <code>g++ -O3 -std=c++17 -o bullet bullet-core.cpp
+./bullet release_v1/production_v1.bullet -p "Life is"</code>
+            </div>
+            <p class="note">✅ That's it! No dependencies, no build system, just pure C++.</p>
+        </div>
+
+        <div class="guide-section">
+            <h3>🌐 Step 3: Try on Web (WASM)</h3>
+            <div class="code-block">
+                <code>cd wasm_build
+python3 -m http.server 8000</code>
+            </div>
+            <p class="note">Open <strong>http://localhost:8000</strong> in your browser.</p>
+        </div>
+
+        <div class="guide-section">
+            <h3>📱 Step 4: Build for Android</h3>
+            <ol>
+                <li>Import <code>mobile/android/</code> into Android Studio</li>
+                <li>Build the NDK module</li>
+                <li>Use <code>BulletModel.kt</code> in your app</li>
+            </ol>
+        </div>
+    </section>
+
+    <section id="dashboard" class="dashboard-section">
+        <h2>🔵 Training Dashboard</h2>
+        <p class="section-intro">Train your own BQ4 models with our visual dashboard.</p>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>Installation</h3>
+                <div class="code-block">
+                    <code>./install_dashboard.sh</code>
+                </div>
+                <p>Installs all dependencies and sets up the environment.</p>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Launch</h3>
+                <div class="code-block">
+                    <code>./dashboard/start_dashboard.sh</code>
+                </div>
+                <p>Starts the server on <strong>http://localhost:8000</strong></p>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Features</h3>
+                <ul>
+                    <li>Visual training progress</li>
+                    <li>Real-time loss graphs</li>
+                    <li>Model export to BQ4</li>
+                    <li>Sample generation</li>
+                </ul>
+            </div>
+        </div>
+
+        <a href="dashboard.zip" class="btn secondary download-btn">Download Dashboard Package</a>
+    </section>
+
+    <section id="docs" class="docs-section">
+        <h2>📚 Documentation</h2>
+
+        <div class="docs-grid">
+            <a href="education.html" class="doc-card">
+                <h3>🎓 Education</h3>
+                <p>Learn AI on any computer - no GPU needed</p>
+            </a>
+
+            <a href="https://github.com/iShrikantBhosale/bullet-core/blob/master/BULLET_USER_MANUAL.md" class="doc-card"
+                target="_blank">
+                <h3>📘 User Manual</h3>
+                <p>How to use your trained .bullet files</p>
+            </a>
+
+            <a href="https://github.com/iShrikantBhosale/bullet-core/blob/master/MANIFESTO.md" class="doc-card"
+                target="_blank">
+                <h3>📖 Manifesto</h3>
+                <p>The philosophy behind Bullet OS</p>
+            </a>
+
+            <a href="https://github.com/iShrikantBhosale/bullet-core/blob/master/BQ4_PAPER.md" class="doc-card"
+                target="_blank">
+                <h3>📊 BQ4 Paper</h3>
+                <p>Technical benchmark and analysis</p>
+            </a>
+
+            <a href="https://github.com/iShrikantBhosale/bullet-core/blob/master/BULLET_SPEC_v1.0.md" class="doc-card"
+                target="_blank">
+                <h3>📐 Specification</h3>
+                <p>File format and architecture</p>
+            </a>
+
+            <a href="https://github.com/iShrikantBhosale/bullet-core" class="doc-card" target="_blank">
+                <h3>💻 Source Code</h3>
+                <p>Full repository on GitHub</p>
+            </a>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <h2>By The Numbers</h2>
+        <div class="stats-grid">
+            <div class="stat">
+                <div class="stat-number">276 KB</div>
+                <div class="stat-label">Model Size</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">&lt;10ms</div>
+                <div class="stat-label">Cold Start</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">6.4×</div>
+                <div class="stat-label">Compression</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">891/s</div>
+                <div class="stat-label">Inferences</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="tricolor-footer">
+        <div class="footer-content">
+            <div class="credits">
+                <h3>Bullet OS V1.0</h3>
+                <p>Created by <strong>Shrikant Bhosale</strong></p>
+                <p>Mentored by <a href="https://hintson.com" target="_blank">Hintson.com</a></p>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/iShrikantBhosale/bullet-core" target="_blank">GitHub</a>
+                <a href="https://github.com/iShrikantBhosale/bullet-core/issues" target="_blank">Issues</a>
+                <a href="https://github.com/iShrikantBhosale/bullet-core/blob/master/LICENSE-RUNTIME"
+                    target="_blank">License</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Bullet OS. Proudly Made in India 🇮🇳</p>
+        </div>
+    </footer>
+</body>
+
+</html>

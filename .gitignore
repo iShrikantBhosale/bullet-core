@@ -7,6 +7,8 @@ build/
 *.js
 !wasm_build/bullet.wasm
 !wasm_build/bullet.js
+!factbullet/**/*.js
+!docs/**/*.js
 
 # Dependencies
 emsdk/

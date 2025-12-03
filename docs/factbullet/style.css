@@ -1,0 +1,135 @@
+:root {
+    --primary: #8a2be2; /* BlueViolet */
+    --primary-dark: #4b0082; /* Indigo */
+    --bg: #1a1a2e;
+    --card-bg: #16213e;
+    --text: #e94560;
+    --text-light: #f0f0f0;
+    --glass: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-light);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+header {
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    margin: 0;
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary);
+}
+
+.search-box {
+    display: flex;
+    gap: 1rem;
+}
+
+input {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 2px solid var(--primary-dark);
+    background: var(--card-bg);
+    color: white;
+    font-size: 1.1rem;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 15px var(--primary-dark);
+}
+
+button {
+    padding: 1rem 2rem;
+    background: var(--primary);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background: #9d4edd;
+}
+
+#status-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.status-step {
+    padding: 0.5rem;
+    border-left: 3px solid var(--primary-dark);
+    color: #aaa;
+    transition: all 0.3s;
+}
+
+.status-step.active {
+    color: white;
+    border-left-color: var(--primary);
+    font-weight: bold;
+}
+
+#result-area {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    line-height: 1.6;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.warning {
+    color: #ffcc00;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* Markdown Styles within Result */
+#result-area h3 { color: var(--primary); margin-top: 0; }
+#result-area ul { padding-left: 1.5rem; }
+#result-area li { margin-bottom: 0.5rem; }
+#result-area a { color: #4cc9f0; text-decoration: none; }
+#result-area a:hover { text-decoration: underline; }
+
+#debug-area {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #000;
+    border: 1px solid #333;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #0f0;
+    max-height: 200px;
+    overflow-y: auto;
+}

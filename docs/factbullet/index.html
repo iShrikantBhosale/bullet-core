@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FactBullet - AI Research Agent</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Load the Generic WASM Model Class -->
+    <script src="../bullet_transformer.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🟣 FactBullet</h1>
+            <p>The Privacy-First AI Research Agent</p>
+        </header>
+
+        <main>
+            <div class="search-box">
+                <input type="text" id="user-query" placeholder="Ask anything..." autofocus>
+                <button id="search-btn">Research</button>
+            </div>
+
+            <div id="status-area" class="hidden">
+                <div class="status-step" id="step-1">Thinking...</div>
+                <div class="status-step" id="step-2">Searching DuckDuckGo...</div>
+                <div class="status-step" id="step-3">Reading & Synthesizing...</div>
+            </div>
+
+            <div id="result-area" class="hidden">
+                <!-- Final Answer will go here -->
+            </div>
+
+            <div id="debug-area" class="hidden">
+                <h3>Debug Log</h3>
+                <pre id="debug-log"></pre>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by Bullet OS WASM & Headless DuckDuckGo</p>
+            <p class="warning">⚠️ Requires local scraper running on port 3000</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
