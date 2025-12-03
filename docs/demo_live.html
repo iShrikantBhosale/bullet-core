@@ -273,15 +273,73 @@
             </div>
 
             <div class="controls-row">
+                <div class="control-group" style="width: 100%;">
+                    <label class="input-label">🎛️ Mode Preset</label>
+                    <select id="presetSelector" class="control-input" onchange="applyPreset()">
+                        <option value="balanced">⚖️ Balanced (ChatGPT-like)</option>
+                        <option value="creative">🎨 Creative (Story/Poetry)</option>
+                        <option value="precise">🎯 Precise (Factual)</option>
+                        <option value="marathi" selected>🚩 Marathi Optimized (Final Formula)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="controls-row">
                 <div class="control-group">
                     <label class="input-label">🎯 Max Tokens</label>
-                    <input type="number" id="maxTokens" class="control-input" value="50" min="10" max="100">
+                    <input type="number" id="maxTokens" class="control-input" value="180" min="10" max="200">
                 </div>
                 <div class="control-group">
                     <label class="input-label">🌡️ Temperature</label>
-                    <input type="number" id="temperature" class="control-input" value="0.8" min="0.1" max="2.0"
-                        step="0.1">
+                    <input type="number" id="temperature" class="control-input" value="0.68" min="0.1" max="2.0"
+                        step="0.01">
                 </div>
+            </div>
+
+            <div class="controls-row">
+                <div class="control-group">
+                    <label class="input-label">🚫 Repetition Penalty</label>
+                    <input type="number" id="repetitionPenalty" class="control-input" value="1.21" min="1.0" max="2.0"
+                        step="0.01" title="Higher values reduce repetition">
+                </div>
+                <div class="control-group">
+                    <label class="input-label">✨ Grammar (Top-P)</label>
+                    <input type="number" id="topP" class="control-input" value="0.93" min="0.1" max="1.0" step="0.01"
+                        title="Lower values make output more focused/grammatical">
+                </div>
+            </div>
+
+            <div class="controls-row">
+                <div class="control-group">
+                    <label class="input-label">👻 Presence Penalty</label>
+                    <input type="number" id="presencePenalty" class="control-input" value="0.27" min="0.0" max="2.0"
+                        step="0.01" title="Encourage new topics">
+                </div>
+                <div class="control-group">
+                    <label class="input-label">📉 Frequency Penalty</label>
+                    <input type="number" id="frequencyPenalty" class="control-input" value="0.23" min="0.0" max="2.0"
+                        step="0.01" title="Reduce frequent tokens">
+                </div>
+            </div>
+
+            <div class="controls-row">
+                <div class="control-group">
+                    <label class="input-label">🛑 Stop Sequence</label>
+                    <input type="text" id="stopSequence" class="control-input" placeholder="e.g. ###, </end>"
+                        value="\n\n,###,</end>">
+                </div>
+                <div class="control-group">
+                    <label class="input-label">🧱 Anti-Repeat Block</label>
+                    <input type="number" id="antiRepeatBlock" class="control-input" value="4" min="0" max="10" step="1"
+                        title="Block repeat of last N tokens">
+                </div>
+            </div>
+
+            <div class="controls-row">
+                <button id="philosopherBtn" class="secondary-btn" onclick="togglePhilosopherMode()"
+                    style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white; border: none;">
+                    🧠 Enable Philosopher Mode (Deep Output)
+                </button>
             </div>
 
             <button id="generateBtn" class="generate-btn" onclick="generateText()" disabled>
@@ -410,10 +468,52 @@
             }
         }
 
+        let philosopherMode = false;
+
+        function togglePhilosopherMode() {
+            philosopherMode = !philosopherMode;
+            const btn = document.getElementById('philosopherBtn');
+            if (philosopherMode) {
+                btn.style.background = 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)';
+                btn.style.color = 'black';
+                btn.textContent = '🧠 Philosopher Mode ACTIVE';
+            } else {
+                btn.style.background = 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)';
+                btn.style.color = 'white';
+                btn.textContent = '🧠 Enable Philosopher Mode (Deep Output)';
+            }
+        }
+
+        function applyPreset() {
+            const preset = document.getElementById('presetSelector').value;
+            const settings = {
+                balanced: { temp: 0.70, topP: 0.90, repPen: 1.22, presPen: 0.28, freqPen: 0.18, block: 6 },
+                creative: { temp: 0.85, topP: 0.95, repPen: 1.10, presPen: 0.0, freqPen: 0.0, block: 0 },
+                precise: { temp: 0.55, topP: 0.85, repPen: 1.30, presPen: 0.10, freqPen: 0.0, block: 2 },
+                marathi: { temp: 0.68, topP: 0.93, repPen: 1.21, presPen: 0.27, freqPen: 0.23, block: 4 }
+            };
+
+            const s = settings[preset];
+            document.getElementById('temperature').value = s.temp;
+            document.getElementById('topP').value = s.topP;
+            document.getElementById('repetitionPenalty').value = s.repPen;
+            document.getElementById('presencePenalty').value = s.presPen;
+            document.getElementById('frequencyPenalty').value = s.freqPen;
+            document.getElementById('antiRepeatBlock').value = s.block;
+        }
+
         async function generateText() {
             const prompt = document.getElementById('prompt').value;
             const maxTokens = parseInt(document.getElementById('maxTokens').value);
             const temperature = parseFloat(document.getElementById('temperature').value);
+            const repetitionPenalty = parseFloat(document.getElementById('repetitionPenalty').value);
+            const topP = parseFloat(document.getElementById('topP').value);
+            const presencePenalty = parseFloat(document.getElementById('presencePenalty').value);
+            const frequencyPenalty = parseFloat(document.getElementById('frequencyPenalty').value);
+            const antiRepeatBlock = parseInt(document.getElementById('antiRepeatBlock').value);
+            const stopSequenceInput = document.getElementById('stopSequence').value;
+            const stopSequences = stopSequenceInput.split(',').map(s => s.trim()).filter(s => s);
+
             const outputDiv = document.getElementById('output');
             const generateBtn = document.getElementById('generateBtn');
 
@@ -430,7 +530,25 @@
                 // Small delay to show loading state
                 await new Promise(resolve => setTimeout(resolve, 100));
 
-                const output = model.generate(prompt, maxTokens, temperature, 40);
+                const logitBias = philosopherMode ? {
+                    "जीवन": 3.0, "आत्मा": 2.5, "सुख": 2.0, "मृत्यू": 1.8, "सत्य": 2.0, "ज्ञान": 2.0,
+                    "कर्म": 2.5, "मोक्ष": 2.0, "शांती": 2.0, "प्रेम": 1.5, "अहंकार": 1.5, "मन": 2.0,
+                    "विचार": 1.5, "साधना": 2.0, "ध्यान": 2.0, "संस्कार": 1.8
+                } : {};
+
+                const output = await model.generate(prompt, {
+                    maxTokens: maxTokens,
+                    temperature: temperature,
+                    topK: 50,
+                    topP: topP,
+                    repetitionPenalty: repetitionPenalty,
+                    presencePenalty: presencePenalty,
+                    frequencyPenalty: frequencyPenalty,
+                    antiRepeatBlock: antiRepeatBlock,
+                    stopSequences: stopSequences,
+                    logitBias: logitBias,
+                    contrastiveAlpha: 0.6 // Enable Contrastive Search by default
+                });
                 outputDiv.textContent = output;
             } catch (error) {
                 outputDiv.textContent = 'Error: ' + error.message;
