@@ -1,0 +1,22 @@
+{
+  "architecture": {
+    "type": "GPT",
+    "vocab_size": 1511,
+    "d_model": 256,
+    "n_head": 4,
+    "n_layer": 8,
+    "max_len": 512
+  },
+  "metadata": {
+    "training_steps": 3000,
+    "validation_loss": 3.966213321685791,
+    "dataset": "marathi_philosophy_dataset_v2.jsonl",
+    "language": "Marathi",
+    "version": "1.0"
+  },
+  "tokenizer": {
+    "type": "BPE",
+    "vocab_size": 1511,
+    "path": "marathi_tokenizer.json"
+  }
+}

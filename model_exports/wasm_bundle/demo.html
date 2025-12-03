@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marathi Philosophy Model - WASM Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #f0f0f0;
+        }
+        .status.loading { background: #fff3cd; }
+        .status.ready { background: #d4edda; }
+        .status.error { background: #f8d7da; }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .output {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        .info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧘 Marathi Philosophy Model</h1>
+        <p style="text-align: center; color: #666;">AI-powered Marathi text generation in your browser</p>
+        
+        <div id="status" class="status loading">Loading model...</div>
+        
+        <div style="margin: 20px 0;">
+            <label for="prompt"><strong>Enter Prompt (Marathi):</strong></label>
+            <textarea id="prompt" rows="3" placeholder="जीवनाचा अर्थ काय आहे?">जीवनाचा अर्थ</textarea>
+        </div>
+        
+        <div style="margin: 20px 0;">
+            <label><strong>Max Tokens:</strong></label>
+            <input type="number" id="maxTokens" value="100" min="10" max="500" style="width: 100px; padding: 5px;">
+            
+            <label style="margin-left: 20px;"><strong>Temperature:</strong></label>
+            <input type="number" id="temperature" value="0.7" min="0.1" max="2.0" step="0.1" style="width: 100px; padding: 5px;">
+        </div>
+        
+        <button id="generateBtn" onclick="generateText()" disabled>Generate Text</button>
+        
+        <div style="margin: 20px 0;">
+            <strong>Output:</strong>
+            <div id="output" class="output">Generated text will appear here...</div>
+        </div>
+        
+        <div class="info">
+            <strong>Model Info:</strong>
+            <div id="modelInfo">Loading...</div>
+        </div>
+    </div>
+
+    <script src="marathi_model.js"></script>
+    <script>
+        let model = null;
+
+        async function initModel() {
+            const statusDiv = document.getElementById('status');
+            const generateBtn = document.getElementById('generateBtn');
+            const modelInfoDiv = document.getElementById('modelInfo');
+            
+            try {
+                statusDiv.textContent = 'Loading model...';
+                statusDiv.className = 'status loading';
+                
+                model = new MarathiPhilosophyModel();
+                const loaded = await model.load();
+                
+                if (loaded) {
+                    statusDiv.textContent = '✅ Model loaded and ready!';
+                    statusDiv.className = 'status ready';
+                    generateBtn.disabled = false;
+                    
+                    const info = model.getInfo();
+                    modelInfoDiv.innerHTML = `
+                        Architecture: ${info.architecture}<br>
+                        Parameters: ${info.parameters.toLocaleString()}<br>
+                        Layers: ${info.layers}, Dimension: ${info.dimension}, Heads: ${info.heads}<br>
+                        Context Length: ${info.contextLength} tokens<br>
+                        Vocabulary: ${info.vocabSize} tokens
+                    `;
+                } else {
+                    throw new Error('Failed to load model');
+                }
+            } catch (error) {
+                statusDiv.textContent = '❌ Error loading model: ' + error.message;
+                statusDiv.className = 'status error';
+                console.error(error);
+            }
+        }
+
+        async function generateText() {
+            const prompt = document.getElementById('prompt').value;
+            const maxTokens = parseInt(document.getElementById('maxTokens').value);
+            const temperature = parseFloat(document.getElementById('temperature').value);
+            const outputDiv = document.getElementById('output');
+            const generateBtn = document.getElementById('generateBtn');
+            
+            if (!prompt.trim()) {
+                alert('Please enter a prompt');
+                return;
+            }
+            
+            try {
+                generateBtn.disabled = true;
+                outputDiv.textContent = 'Generating...';
+                
+                const output = await model.generate(prompt, {
+                    maxTokens,
+                    temperature,
+                    topK: 40
+                });
+                
+                outputDiv.textContent = output;
+            } catch (error) {
+                outputDiv.textContent = 'Error: ' + error.message;
+                console.error(error);
+            } finally {
+                generateBtn.disabled = false;
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', initModel);
+    </script>
+</body>
+</html>
